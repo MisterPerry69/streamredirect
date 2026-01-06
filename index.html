@@ -6,12 +6,16 @@
   <meta http-equiv="Expires" content="0">
 
   <script>
-    // cache-buster per sicurezza estrema
-    var target = "https://streamingcommunityz.移动";
-    window.location.replace(target + "?cb=" + Date.now());
+    fetch("target.txt?cb=" + Date.now(), { cache: "no-store" })
+      .then(response => response.text())
+      .then(url => {
+        url = url.trim();
+        if (url.length > 0) {
+          window.location.replace(url + "?cb=" + Date.now());
+        }
+      });
   </script>
 </head>
 <body>
 </body>
 </html>
-
