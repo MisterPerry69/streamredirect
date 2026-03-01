@@ -3,581 +3,743 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Style Preview Cards</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Lora:ital@0;1&family=Syne:wght@700;800&family=Space+Grotesk:wght@300;400;700&family=Noto+Serif+JP:wght@300;400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<title>Dark Style Variants</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=Noto+Serif+JP:wght@200;300;400&family=DM+Mono:wght@300;400;500&family=Fraunces:ital,opsz,wght@0,9..144,200;0,9..144,700;1,9..144,300&family=Space+Grotesk:wght@300;400;600;700&family=Cormorant+Garamond:ital,wght@0,300;0,600;1,300&display=swap" rel="stylesheet">
 <style>
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-  body {
-    background: #0f0f0f;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 60px 24px;
-    gap: 0;
-    font-family: 'DM Sans', sans-serif;
-  }
+body {
+  background: #080808;
+  min-height: 100vh;
+  padding: 60px 24px 80px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0;
+}
 
-  h1 {
-    color: #fff;
-    font-family: 'DM Sans', sans-serif;
-    font-weight: 300;
-    font-size: 13px;
-    letter-spacing: 0.3em;
-    text-transform: uppercase;
-    margin-bottom: 48px;
-    opacity: 0.4;
-  }
+.page-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.35em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.2);
+  margin-bottom: 52px;
+}
 
-  .cards {
-    display: flex;
-    flex-direction: column;
-    gap: 32px;
-    width: 100%;
-    max-width: 560px;
-  }
+.cards {
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+  width: 100%;
+  max-width: 580px;
+}
 
-  /* ── label ── */
-  .style-label {
-    font-size: 10px;
-    letter-spacing: 0.25em;
-    text-transform: uppercase;
-    margin-bottom: 12px;
-    opacity: 0.5;
-    color: #fff;
-    font-family: 'DM Mono', monospace;
-  }
+.card-unit {
+  opacity: 0;
+  transform: translateY(24px);
+  animation: up 0.6s cubic-bezier(.16,1,.3,1) forwards;
+}
+.card-unit:nth-child(1) { animation-delay: 0.1s; }
+.card-unit:nth-child(2) { animation-delay: 0.25s; }
+.card-unit:nth-child(3) { animation-delay: 0.4s; }
+@keyframes up { to { opacity:1; transform:translateY(0); } }
 
-  /* ═══════════════════════════════
-     1. BAUHAUS / SWISS
-  ═══════════════════════════════ */
-  .card-bauhaus {
-    background: #F5F0E8;
-    padding: 36px;
-    position: relative;
-    overflow: hidden;
-  }
-  .card-bauhaus::before {
-    content: '';
-    position: absolute;
-    top: 0; left: 0;
-    width: 8px; height: 100%;
-    background: #E63329;
-  }
-  .card-bauhaus .bh-title {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 64px;
-    line-height: 0.9;
-    color: #111;
-    letter-spacing: 0.02em;
-    padding-left: 20px;
-  }
-  .card-bauhaus .bh-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    gap: 8px;
-    margin-top: 20px;
-    padding-left: 20px;
-  }
-  .bh-block {
-    height: 6px;
-    background: #111;
-  }
-  .bh-block:nth-child(2) { background: #E63329; }
-  .bh-block:nth-child(3) { background: #F2C013; }
-  .card-bauhaus .bh-body {
-    font-family: 'DM Sans', sans-serif;
-    font-size: 12px;
-    color: #555;
-    margin-top: 16px;
-    padding-left: 20px;
-    letter-spacing: 0.04em;
-    text-transform: uppercase;
-    font-weight: 500;
-  }
-  .card-bauhaus .bh-stats {
-    display: flex;
-    gap: 24px;
-    margin-top: 24px;
-    padding-left: 20px;
-  }
-  .bh-stat-num {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 36px;
-    color: #111;
-    line-height: 1;
-  }
-  .bh-stat-label {
-    font-size: 9px;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    color: #999;
-    margin-top: 2px;
-  }
-  .bh-circle {
-    position: absolute;
-    bottom: -30px; right: -30px;
-    width: 120px; height: 120px;
-    border-radius: 50%;
-    border: 8px solid #E63329;
-    opacity: 0.3;
-  }
+.variant-tag {
+  font-family: 'DM Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.25);
+  margin-bottom: 10px;
+  display: block;
+}
 
-  /* ═══════════════════════════════
-     2. ANALOG / PAPER
-  ═══════════════════════════════ */
-  .card-paper {
-    background: #F9F4EC;
-    padding: 36px;
-    position: relative;
-    border: 1px solid #DDD5C8;
-    box-shadow: 0 2px 0 #DDD5C8, 0 4px 0 #CEC5B5;
-  }
-  .card-paper::after {
-    content: '';
-    position: absolute;
-    top: 0; left: 0; right: 0; bottom: 0;
-    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='4' height='4'%3E%3Crect width='4' height='4' fill='%23F9F4EC'/%3E%3Ccircle cx='1' cy='1' r='0.5' fill='%23C8BFB0' opacity='0.3'/%3E%3C/svg%3E");
-    pointer-events: none;
-  }
-  .card-paper .pp-date {
-    font-family: 'DM Mono', monospace;
-    font-size: 10px;
-    color: #A89880;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-  }
-  .card-paper .pp-title {
-    font-family: 'Playfair Display', serif;
-    font-size: 38px;
-    color: #2C2318;
-    line-height: 1.1;
-    margin-top: 8px;
-    font-style: italic;
-  }
-  .card-paper .pp-divider {
-    width: 40px;
-    height: 1px;
-    background: #A89880;
-    margin: 16px 0;
-  }
-  .card-paper .pp-body {
-    font-family: 'Lora', serif;
-    font-size: 13.5px;
-    color: #5C4F3D;
-    line-height: 1.75;
-  }
-  .card-paper .pp-tasks {
-    margin-top: 20px;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-  }
-  .pp-task {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    font-family: 'Lora', serif;
-    font-size: 13px;
-    color: #5C4F3D;
-  }
-  .pp-task::before {
-    content: '○';
-    font-size: 10px;
-    color: #A89880;
-    flex-shrink: 0;
-  }
-  .pp-task.done { text-decoration: line-through; color: #B0A090; }
-  .pp-task.done::before { content: '●'; color: #A89880; }
+/* ═══════════════════════════════════════
+   VARIANT A — "AURORA"
+   Glass + Bauhaus geometry, northern lights
+═══════════════════════════════════════ */
+.aurora-wrap {
+  position: relative;
+  border-radius: 20px;
+  overflow: hidden;
+}
+.aurora-bg {
+  position: absolute; inset: 0;
+  background: #0D0F14;
+}
+.aurora-bg::before {
+  content: '';
+  position: absolute;
+  width: 340px; height: 340px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(56,189,248,0.18) 0%, transparent 70%);
+  top: -100px; left: -60px;
+}
+.aurora-bg::after {
+  content: '';
+  position: absolute;
+  width: 280px; height: 280px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(168,85,247,0.2) 0%, transparent 70%);
+  bottom: -80px; right: -40px;
+}
+.aurora-glow-mid {
+  position: absolute;
+  width: 200px; height: 200px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(16,185,129,0.12) 0%, transparent 70%);
+  top: 50%; left: 50%;
+  transform: translate(-50%,-50%);
+}
+.aurora-card {
+  position: relative; z-index: 1;
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 20px;
+  padding: 32px;
+  backdrop-filter: blur(30px);
+  background: rgba(255,255,255,0.03);
+}
+.au-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+.au-tag {
+  font-family: 'DM Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 0.25em;
+  color: rgba(56,189,248,0.8);
+  text-transform: uppercase;
+  border: 1px solid rgba(56,189,248,0.2);
+  padding: 4px 10px;
+  border-radius: 100px;
+}
+.au-geo {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+.au-dot { width: 6px; height: 6px; border-radius: 50%; }
+.au-dot:nth-child(1) { background: rgba(56,189,248,0.6); }
+.au-dot:nth-child(2) { background: rgba(168,85,247,0.6); }
+.au-dot:nth-child(3) { background: rgba(16,185,129,0.6); }
 
-  /* ═══════════════════════════════
-     3. GLASSMORPHISM / LIQUID
-  ═══════════════════════════════ */
-  .card-glass-wrap {
-    position: relative;
-    border-radius: 24px;
-    overflow: hidden;
-  }
-  .card-glass-bg {
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(135deg, #6B21A8 0%, #C026D3 40%, #0EA5E9 100%);
-  }
-  .card-glass-bg::before {
-    content: '';
-    position: absolute;
-    width: 200px; height: 200px;
-    border-radius: 50%;
-    background: rgba(251,113,133,0.5);
-    top: -60px; right: -40px;
-    filter: blur(50px);
-  }
-  .card-glass-bg::after {
-    content: '';
-    position: absolute;
-    width: 150px; height: 150px;
-    border-radius: 50%;
-    background: rgba(34,211,238,0.4);
-    bottom: -40px; left: 20px;
-    filter: blur(40px);
-  }
-  .card-glass {
-    position: relative;
-    z-index: 1;
-    background: rgba(255,255,255,0.08);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    border: 1px solid rgba(255,255,255,0.15);
-    border-radius: 24px;
-    padding: 32px;
-    box-shadow: inset 0 1px 0 rgba(255,255,255,0.2);
-  }
-  .gl-tag {
-    display: inline-block;
-    background: rgba(255,255,255,0.15);
-    border: 1px solid rgba(255,255,255,0.2);
-    border-radius: 100px;
-    padding: 4px 14px;
-    font-size: 11px;
-    color: rgba(255,255,255,0.8);
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-  }
-  .gl-title {
-    font-family: 'Syne', sans-serif;
-    font-size: 42px;
-    font-weight: 800;
-    color: #fff;
-    line-height: 1;
-    margin-top: 12px;
-  }
-  .gl-subtitle {
-    color: rgba(255,255,255,0.55);
-    font-size: 13px;
-    margin-top: 6px;
-    letter-spacing: 0.05em;
-  }
-  .gl-cards {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 10px;
-    margin-top: 22px;
-  }
-  .gl-mini {
-    background: rgba(255,255,255,0.08);
-    border: 1px solid rgba(255,255,255,0.12);
-    border-radius: 14px;
-    padding: 14px;
-    backdrop-filter: blur(10px);
-  }
-  .gl-mini-num {
-    font-family: 'Syne', sans-serif;
-    font-size: 30px;
-    font-weight: 700;
-    color: #fff;
-  }
-  .gl-mini-label {
-    font-size: 11px;
-    color: rgba(255,255,255,0.5);
-    margin-top: 2px;
-  }
-  .gl-bar-wrap {
-    margin-top: 18px;
-    height: 4px;
-    background: rgba(255,255,255,0.1);
-    border-radius: 2px;
-    overflow: hidden;
-  }
-  .gl-bar {
-    height: 100%;
-    width: 68%;
-    background: linear-gradient(90deg, #F0ABFC, #38BDF8);
-    border-radius: 2px;
-  }
-  .gl-bar-label {
-    display: flex;
-    justify-content: space-between;
-    margin-top: 6px;
-    font-size: 10px;
-    color: rgba(255,255,255,0.4);
-  }
+.au-title {
+  font-family: 'Syne', sans-serif;
+  font-size: 52px;
+  font-weight: 800;
+  color: #fff;
+  line-height: 0.95;
+  margin-top: 20px;
+  letter-spacing: -0.02em;
+}
+.au-title span {
+  -webkit-text-stroke: 1px rgba(255,255,255,0.3);
+  color: transparent;
+}
 
-  /* ═══════════════════════════════
-     4. NEO-BRUTALISM
-  ═══════════════════════════════ */
-  .card-brutal {
-    background: #FFE951;
-    border: 3px solid #0A0A0A;
-    box-shadow: 6px 6px 0 #0A0A0A;
-    padding: 32px;
-    position: relative;
-  }
-  .nb-badge {
-    display: inline-block;
-    background: #0A0A0A;
-    color: #FFE951;
-    font-family: 'Syne', sans-serif;
-    font-size: 10px;
-    font-weight: 700;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    padding: 4px 10px;
-    margin-bottom: 12px;
-  }
-  .nb-title {
-    font-family: 'Syne', sans-serif;
-    font-size: 52px;
-    font-weight: 800;
-    color: #0A0A0A;
-    line-height: 0.95;
-    text-transform: uppercase;
-  }
-  .nb-divider {
-    height: 3px;
-    background: #0A0A0A;
-    margin: 16px 0;
-  }
-  .nb-tasks {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-  }
-  .nb-task {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    font-family: 'Syne', sans-serif;
-    font-size: 14px;
-    font-weight: 700;
-    color: #0A0A0A;
-    background: #fff;
-    border: 2px solid #0A0A0A;
-    padding: 8px 12px;
-  }
-  .nb-check {
-    width: 16px; height: 16px;
-    border: 2px solid #0A0A0A;
-    background: #FF3B30;
-    flex-shrink: 0;
-  }
-  .nb-check.done { background: #0A0A0A; }
-  .nb-corner {
-    position: absolute;
-    bottom: -3px; right: -3px;
-    width: 0; height: 0;
-  }
+.au-rule {
+  height: 1px;
+  background: linear-gradient(90deg, rgba(56,189,248,0.4), rgba(168,85,247,0.4), transparent);
+  margin: 22px 0;
+}
 
-  /* ═══════════════════════════════
-     5. MINIMALISMO GIAPPONESE
-  ═══════════════════════════════ */
-  .card-jp {
-    background: #FAFAF8;
-    border: 1px solid #E8E5DF;
-    padding: 40px 36px;
-    position: relative;
-  }
-  .jp-line-top {
-    position: absolute;
-    top: 0; left: 36px; right: 36px;
-    height: 2px;
-    background: #1A1A1A;
-  }
-  .jp-kanji {
-    font-family: 'Noto Serif JP', serif;
-    font-size: 11px;
-    color: #B0A898;
-    letter-spacing: 0.3em;
-    margin-bottom: 20px;
-  }
-  .jp-title {
-    font-family: 'Noto Serif JP', serif;
-    font-size: 36px;
-    font-weight: 300;
-    color: #1A1A1A;
-    line-height: 1.4;
-    letter-spacing: 0.02em;
-  }
-  .jp-body {
-    font-family: 'Noto Serif JP', serif;
-    font-size: 12px;
-    color: #8A8078;
-    line-height: 2;
-    margin-top: 16px;
-    font-weight: 300;
-    letter-spacing: 0.05em;
-  }
-  .jp-items {
-    margin-top: 28px;
-    display: flex;
-    flex-direction: column;
-  }
-  .jp-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: baseline;
-    padding: 12px 0;
-    border-bottom: 1px solid #E8E5DF;
-    font-family: 'Noto Serif JP', serif;
-  }
-  .jp-item:first-child { border-top: 1px solid #E8E5DF; }
-  .jp-item-name {
-    font-size: 13px;
-    color: #1A1A1A;
-    font-weight: 400;
-    letter-spacing: 0.05em;
-  }
-  .jp-item-val {
-    font-size: 11px;
-    color: #B0A898;
-    letter-spacing: 0.1em;
-  }
-  .jp-accent {
-    position: absolute;
-    bottom: 24px; right: 36px;
-    width: 20px; height: 20px;
-    background: #C8B560;
-    border-radius: 50%;
-  }
+.au-grid {
+  display: grid;
+  grid-template-columns: repeat(3,1fr);
+  gap: 10px;
+}
+.au-cell {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 12px;
+  padding: 14px 12px;
+}
+.au-cell-num {
+  font-family: 'Syne', sans-serif;
+  font-size: 28px;
+  font-weight: 700;
+  color: #fff;
+  line-height: 1;
+}
+.au-cell-num.blue { color: #38BDF8; }
+.au-cell-num.purple { color: #C084FC; }
+.au-cell-num.green { color: #34D399; }
+.au-cell-label {
+  font-size: 9px;
+  font-family: 'DM Mono', monospace;
+  letter-spacing: 0.12em;
+  color: rgba(255,255,255,0.3);
+  text-transform: uppercase;
+  margin-top: 4px;
+}
 
-  /* Entrance animation */
-  .card-unit {
-    opacity: 0;
-    transform: translateY(20px);
-    animation: fadeUp 0.5s ease forwards;
-  }
-  .card-unit:nth-child(1) { animation-delay: 0.05s; }
-  .card-unit:nth-child(2) { animation-delay: 0.15s; }
-  .card-unit:nth-child(3) { animation-delay: 0.25s; }
-  .card-unit:nth-child(4) { animation-delay: 0.35s; }
-  .card-unit:nth-child(5) { animation-delay: 0.45s; }
+.au-bar-section { margin-top: 18px; }
+.au-bar-header {
+  display: flex;
+  justify-content: space-between;
+  font-family: 'DM Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 0.15em;
+  color: rgba(255,255,255,0.3);
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+.au-bars { display: flex; flex-direction: column; gap: 6px; }
+.au-bar-row { display: flex; align-items: center; gap: 10px; }
+.au-bar-name {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  color: rgba(255,255,255,0.5);
+  width: 70px;
+  flex-shrink: 0;
+}
+.au-bar-track {
+  flex: 1; height: 4px;
+  background: rgba(255,255,255,0.06);
+  border-radius: 2px;
+  overflow: hidden;
+}
+.au-bar-fill {
+  height: 100%; border-radius: 2px;
+}
+.au-bar-fill.b1 { width: 82%; background: linear-gradient(90deg,#38BDF8,#818CF8); }
+.au-bar-fill.b2 { width: 65%; background: linear-gradient(90deg,#C084FC,#F472B6); }
+.au-bar-fill.b3 { width: 90%; background: linear-gradient(90deg,#34D399,#38BDF8); }
+.au-bar-pct {
+  font-family: 'DM Mono', monospace;
+  font-size: 9px;
+  color: rgba(255,255,255,0.3);
+  width: 28px;
+  text-align: right;
+}
 
-  @keyframes fadeUp {
-    to { opacity: 1; transform: translateY(0); }
-  }
+/* ═══════════════════════════════════════
+   VARIANT B — "SUMI"
+   Glass + Japan, ink on dark, gold accents
+═══════════════════════════════════════ */
+.sumi-wrap {
+  position: relative;
+  border-radius: 2px;
+  overflow: hidden;
+  background: #0C0B09;
+  border: 1px solid rgba(255,255,255,0.06);
+}
+.sumi-side {
+  position: absolute;
+  top: 0; left: 0;
+  width: 3px; height: 100%;
+  background: linear-gradient(180deg, #C8A84B, #8B6914, transparent);
+}
+.sumi-corner {
+  position: absolute;
+  top: 0; right: 0;
+  width: 80px; height: 80px;
+  border-left: 1px solid rgba(200,168,75,0.15);
+  border-bottom: 1px solid rgba(200,168,75,0.15);
+}
+.sumi-inner {
+  padding: 36px 36px 36px 44px;
+  position: relative; z-index:1;
+}
+.sumi-kana {
+  font-family: 'Noto Serif JP', serif;
+  font-size: 10px;
+  font-weight: 200;
+  letter-spacing: 0.5em;
+  color: rgba(200,168,75,0.5);
+  margin-bottom: 24px;
+  display: block;
+}
+.sumi-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 44px;
+  font-weight: 300;
+  color: #F5F0E4;
+  line-height: 1.15;
+  letter-spacing: 0.01em;
+}
+.sumi-title em {
+  font-style: italic;
+  color: rgba(200,168,75,0.9);
+}
+.sumi-divider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 24px 0;
+}
+.sumi-line { flex:1; height: 1px; background: rgba(255,255,255,0.07); }
+.sumi-diamond {
+  width: 5px; height: 5px;
+  background: rgba(200,168,75,0.5);
+  transform: rotate(45deg);
+  flex-shrink: 0;
+}
+.sumi-items {
+  display: flex;
+  flex-direction: column;
+}
+.sumi-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding: 11px 0;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+  position: relative;
+}
+.sumi-item:last-child { border-bottom: none; }
+.sumi-item-dot {
+  position: absolute;
+  left: -16px;
+  top: 50%; transform: translateY(-50%);
+  width: 4px; height: 4px;
+  border-radius: 50%;
+  background: rgba(200,168,75,0.4);
+}
+.sumi-item-name {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 15px;
+  font-weight: 300;
+  color: rgba(245,240,228,0.8);
+  letter-spacing: 0.03em;
+}
+.sumi-item-jp {
+  font-family: 'Noto Serif JP', serif;
+  font-size: 10px;
+  font-weight: 200;
+  color: rgba(200,168,75,0.4);
+  letter-spacing: 0.2em;
+}
+.sumi-bottom {
+  margin-top: 28px;
+  display: flex;
+  gap: 20px;
+}
+.sumi-stat {
+  display: flex;
+  flex-direction: column;
+}
+.sumi-stat-num {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 32px;
+  font-weight: 600;
+  color: #C8A84B;
+  line-height: 1;
+}
+.sumi-stat-label {
+  font-family: 'Noto Serif JP', serif;
+  font-size: 9px;
+  font-weight: 200;
+  color: rgba(255,255,255,0.25);
+  letter-spacing: 0.2em;
+  margin-top: 3px;
+  text-transform: uppercase;
+}
+.sumi-glass-pill {
+  margin-top: 28px;
+  background: rgba(200,168,75,0.05);
+  border: 1px solid rgba(200,168,75,0.15);
+  border-radius: 2px;
+  padding: 12px 16px;
+  font-family: 'Noto Serif JP', serif;
+  font-size: 11px;
+  font-weight: 200;
+  color: rgba(200,168,75,0.6);
+  letter-spacing: 0.15em;
+  text-align: center;
+}
+
+/* ═══════════════════════════════════════
+   VARIANT C — "OBSIDIAN"
+   Something new: dark luxury, editorial,
+   high contrast type + geometric glass
+═══════════════════════════════════════ */
+.obsidian-wrap {
+  background: #111014;
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 4px;
+  position: relative;
+  overflow: hidden;
+}
+.obs-noise {
+  position: absolute; inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+  opacity: 0.4;
+  pointer-events: none;
+}
+.obs-accent-bar {
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, #E8D5B0, #C8A87A, transparent);
+}
+.obs-inner {
+  padding: 36px;
+  position: relative; z-index: 1;
+}
+.obs-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+.obs-date-block {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+.obs-day {
+  font-family: 'Fraunces', serif;
+  font-size: 64px;
+  font-weight: 700;
+  color: #fff;
+  line-height: 0.85;
+  letter-spacing: -0.03em;
+}
+.obs-month {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.3em;
+  color: rgba(255,255,255,0.3);
+  text-transform: uppercase;
+  margin-top: 6px;
+}
+.obs-status-box {
+  background: rgba(232,213,176,0.05);
+  border: 1px solid rgba(232,213,176,0.15);
+  border-radius: 3px;
+  padding: 10px 14px;
+  text-align: right;
+}
+.obs-status-num {
+  font-family: 'Fraunces', serif;
+  font-size: 28px;
+  font-weight: 200;
+  color: #E8D5B0;
+  line-height: 1;
+}
+.obs-status-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 8px;
+  letter-spacing: 0.2em;
+  color: rgba(232,213,176,0.4);
+  text-transform: uppercase;
+  margin-top: 3px;
+}
+
+.obs-divider {
+  height: 1px;
+  background: rgba(255,255,255,0.06);
+  margin: 28px 0;
+}
+
+.obs-title-row {
+  display: flex;
+  align-items: baseline;
+  gap: 16px;
+}
+.obs-big-text {
+  font-family: 'Fraunces', serif;
+  font-size: 38px;
+  font-weight: 200;
+  color: #F5EFE4;
+  line-height: 1.1;
+  font-style: italic;
+}
+.obs-big-text strong {
+  font-style: normal;
+  font-weight: 700;
+  color: #fff;
+}
+
+.obs-tasks {
+  margin-top: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+.obs-task {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 13px 0;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+.obs-task:first-child { border-top: 1px solid rgba(255,255,255,0.05); }
+.obs-task-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.obs-check {
+  width: 18px; height: 18px;
+  border: 1px solid rgba(232,213,176,0.2);
+  border-radius: 2px;
+  flex-shrink: 0;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.obs-check.filled {
+  background: rgba(232,213,176,0.08);
+  border-color: rgba(232,213,176,0.4);
+}
+.obs-check.filled::after {
+  content: '';
+  width: 6px; height: 6px;
+  background: #E8D5B0;
+  border-radius: 1px;
+  transform: rotate(45deg);
+}
+.obs-task-name {
+  font-family: 'Fraunces', serif;
+  font-size: 14px;
+  font-weight: 300;
+  color: rgba(245,239,228,0.7);
+  letter-spacing: 0.01em;
+}
+.obs-task.done .obs-task-name {
+  color: rgba(245,239,228,0.3);
+  text-decoration: line-through;
+  text-decoration-color: rgba(255,255,255,0.15);
+}
+.obs-task-time {
+  font-family: 'DM Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 0.15em;
+  color: rgba(255,255,255,0.2);
+}
+
+.obs-bottom {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-top: 24px;
+}
+.obs-mini {
+  background: rgba(255,255,255,0.02);
+  border: 1px solid rgba(255,255,255,0.05);
+  border-radius: 3px;
+  padding: 14px;
+  position: relative;
+  overflow: hidden;
+}
+.obs-mini::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0;
+  width: 2px; height: 100%;
+  background: linear-gradient(180deg, #E8D5B0, transparent);
+  opacity: 0.4;
+}
+.obs-mini-val {
+  font-family: 'Fraunces', serif;
+  font-size: 26px;
+  font-weight: 200;
+  color: #E8D5B0;
+  line-height: 1;
+}
+.obs-mini-key {
+  font-family: 'DM Mono', monospace;
+  font-size: 8px;
+  letter-spacing: 0.18em;
+  color: rgba(255,255,255,0.25);
+  text-transform: uppercase;
+  margin-top: 5px;
+}
 </style>
 </head>
 <body>
-<h1>Style Preview — Life OS</h1>
+
+<div class="page-label">Dark Style Variants — Life OS</div>
 
 <div class="cards">
 
-  <!-- 1. BAUHAUS -->
+  <!-- A: AURORA -->
   <div class="card-unit">
-    <div class="style-label">01 — Bauhaus / Swiss Design</div>
-    <div class="card-bauhaus">
-      <div class="bh-circle"></div>
-      <div class="bh-title">LIFE<br>OS</div>
-      <div class="bh-grid">
-        <div class="bh-block"></div>
-        <div class="bh-block"></div>
-        <div class="bh-block"></div>
+    <span class="variant-tag">A — Aurora · Glass + Bauhaus + Chromatic</span>
+    <div class="aurora-wrap">
+      <div class="aurora-bg">
+        <div class="aurora-glow-mid"></div>
       </div>
-      <div class="bh-body">01 / Marzo 2026 — Focus Mode</div>
-      <div class="bh-stats">
-        <div>
-          <div class="bh-stat-num">7</div>
-          <div class="bh-stat-label">Task oggi</div>
-        </div>
-        <div>
-          <div class="bh-stat-num">3</div>
-          <div class="bh-stat-label">Completate</div>
-        </div>
-        <div>
-          <div class="bh-stat-num">82%</div>
-          <div class="bh-stat-label">Weekly goal</div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- 2. ANALOG / PAPER -->
-  <div class="card-unit">
-    <div class="style-label">02 — Analog / Paper UI</div>
-    <div class="card-paper">
-      <div class="pp-date">Domenica, 1 Marzo 2026</div>
-      <div class="pp-title">La mia giornata</div>
-      <div class="pp-divider"></div>
-      <div class="pp-body">Un momento di ordine tra il caos quotidiano.</div>
-      <div class="pp-tasks">
-        <div class="pp-task done">Meditazione mattutina</div>
-        <div class="pp-task done">Revisione obiettivi settimanali</div>
-        <div class="pp-task">Chiamata con Marco</div>
-        <div class="pp-task">Aggiornare journal</div>
-      </div>
-    </div>
-  </div>
-
-  <!-- 3. GLASSMORPHISM -->
-  <div class="card-unit">
-    <div class="style-label">03 — Glassmorphism / Liquid</div>
-    <div class="card-glass-wrap">
-      <div class="card-glass-bg"></div>
-      <div class="card-glass">
-        <span class="gl-tag">Marzo 2026</span>
-        <div class="gl-title">Focus<br>Week</div>
-        <div class="gl-subtitle">Tu stai costruendo qualcosa di grande.</div>
-        <div class="gl-cards">
-          <div class="gl-mini">
-            <div class="gl-mini-num">12</div>
-            <div class="gl-mini-label">Ore deep work</div>
-          </div>
-          <div class="gl-mini">
-            <div class="gl-mini-num">5/7</div>
-            <div class="gl-mini-label">Abitudini</div>
+      <div class="aurora-card">
+        <div class="au-top">
+          <span class="au-tag">01 Marzo 2026</span>
+          <div class="au-geo">
+            <div class="au-dot"></div>
+            <div class="au-dot"></div>
+            <div class="au-dot"></div>
           </div>
         </div>
-        <div class="gl-bar-wrap">
-          <div class="gl-bar"></div>
+
+        <div class="au-title">LIFE<br><span>SYS</span></div>
+
+        <div class="au-rule"></div>
+
+        <div class="au-grid">
+          <div class="au-cell">
+            <div class="au-cell-num blue">7</div>
+            <div class="au-cell-label">Task</div>
+          </div>
+          <div class="au-cell">
+            <div class="au-cell-num purple">82%</div>
+            <div class="au-cell-label">Focus</div>
+          </div>
+          <div class="au-cell">
+            <div class="au-cell-num green">5/7</div>
+            <div class="au-cell-label">Habits</div>
+          </div>
         </div>
-        <div class="gl-bar-label">
-          <span>Progresso mensile</span>
-          <span>68%</span>
+
+        <div class="au-bar-section">
+          <div class="au-bar-header">
+            <span>Weekly progress</span>
+            <span>Settimana 9</span>
+          </div>
+          <div class="au-bars">
+            <div class="au-bar-row">
+              <span class="au-bar-name">Lavoro</span>
+              <div class="au-bar-track"><div class="au-bar-fill b1"></div></div>
+              <span class="au-bar-pct">82%</span>
+            </div>
+            <div class="au-bar-row">
+              <span class="au-bar-name">Salute</span>
+              <div class="au-bar-track"><div class="au-bar-fill b2"></div></div>
+              <span class="au-bar-pct">65%</span>
+            </div>
+            <div class="au-bar-row">
+              <span class="au-bar-name">Mindset</span>
+              <div class="au-bar-track"><div class="au-bar-fill b3"></div></div>
+              <span class="au-bar-pct">90%</span>
+            </div>
+          </div>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- 4. NEO-BRUTALISM -->
+  <!-- B: SUMI -->
   <div class="card-unit">
-    <div class="style-label">04 — Neo-Brutalism</div>
-    <div class="card-brutal">
-      <div class="nb-badge">★ Today</div>
-      <div class="nb-title">GET IT<br>DONE</div>
-      <div class="nb-divider"></div>
-      <div class="nb-tasks">
-        <div class="nb-task"><div class="nb-check done"></div>Sveglia 6:30</div>
-        <div class="nb-task"><div class="nb-check done"></div>Workout</div>
-        <div class="nb-task"><div class="nb-check"></div>Deep work 2h</div>
-        <div class="nb-task"><div class="nb-check"></div>No scroll dopo le 21</div>
+    <span class="variant-tag">B — Sumi · Glass + Japan + Gold ink</span>
+    <div class="sumi-wrap">
+      <div class="sumi-side"></div>
+      <div class="sumi-corner"></div>
+      <div class="sumi-inner">
+        <span class="sumi-kana">生活 · 整理 · 集中</span>
+        <div class="sumi-title">La mia vita,<br><em>con intenzione</em></div>
+
+        <div class="sumi-divider">
+          <div class="sumi-line"></div>
+          <div class="sumi-diamond"></div>
+          <div class="sumi-line"></div>
+        </div>
+
+        <div class="sumi-items">
+          <div class="sumi-item">
+            <div class="sumi-item-dot"></div>
+            <span class="sumi-item-name">Meditazione</span>
+            <span class="sumi-item-jp">瞑想</span>
+          </div>
+          <div class="sumi-item">
+            <div class="sumi-item-dot"></div>
+            <span class="sumi-item-name">Deep work</span>
+            <span class="sumi-item-jp">集中</span>
+          </div>
+          <div class="sumi-item">
+            <div class="sumi-item-dot"></div>
+            <span class="sumi-item-name">Riflessione serale</span>
+            <span class="sumi-item-jp">振り返り</span>
+          </div>
+        </div>
+
+        <div class="sumi-bottom">
+          <div class="sumi-stat">
+            <span class="sumi-stat-num">12</span>
+            <span class="sumi-stat-label">Ore focus</span>
+          </div>
+          <div class="sumi-stat">
+            <span class="sumi-stat-num">5</span>
+            <span class="sumi-stat-label">Giorni streak</span>
+          </div>
+          <div class="sumi-stat">
+            <span class="sumi-stat-num">93%</span>
+            <span class="sumi-stat-label">Completion</span>
+          </div>
+        </div>
+
+        <div class="sumi-glass-pill">一歩一歩 · Un passo alla volta</div>
       </div>
     </div>
   </div>
 
-  <!-- 5. MINIMALISMO GIAPPONESE -->
+  <!-- C: OBSIDIAN -->
   <div class="card-unit">
-    <div class="style-label">05 — Minimalismo Giapponese</div>
-    <div class="card-jp">
-      <div class="jp-line-top"></div>
-      <div class="jp-kanji">生活 · 整理 · 静寂</div>
-      <div class="jp-title">Oggi,<br>con calma.</div>
-      <div class="jp-body">Ogni giorno porta con sé nuove possibilità.<br>Procedi con intenzione.</div>
-      <div class="jp-items">
-        <div class="jp-item">
-          <span class="jp-item-name">Mattino</span>
-          <span class="jp-item-val">Meditazione · Lettura</span>
+    <span class="variant-tag">C — Obsidian · Dark luxury editorial · Qualcosa di nuovo</span>
+    <div class="obsidian-wrap">
+      <div class="obs-noise"></div>
+      <div class="obs-accent-bar"></div>
+      <div class="obs-inner">
+        <div class="obs-header">
+          <div class="obs-date-block">
+            <div class="obs-day">01</div>
+            <div class="obs-month">Marzo · 2026</div>
+          </div>
+          <div class="obs-status-box">
+            <div class="obs-status-num">68%</div>
+            <div class="obs-status-label">Settimana</div>
+          </div>
         </div>
-        <div class="jp-item">
-          <span class="jp-item-name">Pomeriggio</span>
-          <span class="jp-item-val">Lavoro profondo</span>
+
+        <div class="obs-divider"></div>
+
+        <div class="obs-big-text">
+          <strong>Costruisci</strong><br>la versione<br>migliore.
         </div>
-        <div class="jp-item">
-          <span class="jp-item-name">Sera</span>
-          <span class="jp-item-val">Riflessione · Riposo</span>
+
+        <div class="obs-tasks">
+          <div class="obs-task done">
+            <div class="obs-task-left">
+              <div class="obs-check filled"></div>
+              <span class="obs-task-name">Workout mattutino</span>
+            </div>
+            <span class="obs-task-time">06:30</span>
+          </div>
+          <div class="obs-task done">
+            <div class="obs-task-left">
+              <div class="obs-check filled"></div>
+              <span class="obs-task-name">Revisione settimanale</span>
+            </div>
+            <span class="obs-task-time">09:00</span>
+          </div>
+          <div class="obs-task">
+            <div class="obs-task-left">
+              <div class="obs-check"></div>
+              <span class="obs-task-name">Deep work — Progetto X</span>
+            </div>
+            <span class="obs-task-time">14:00</span>
+          </div>
+          <div class="obs-task">
+            <div class="obs-task-left">
+              <div class="obs-check"></div>
+              <span class="obs-task-name">Journal serale</span>
+            </div>
+            <span class="obs-task-time">21:30</span>
+          </div>
+        </div>
+
+        <div class="obs-bottom">
+          <div class="obs-mini">
+            <div class="obs-mini-val">14h</div>
+            <div class="obs-mini-key">Focus totale</div>
+          </div>
+          <div class="obs-mini">
+            <div class="obs-mini-val">5/7</div>
+            <div class="obs-mini-key">Abitudini</div>
+          </div>
         </div>
       </div>
-      <div class="jp-accent"></div>
     </div>
   </div>
 
