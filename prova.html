@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Style Preview Cards</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Lora:ital@0;1&family=Syne:wght@700;800&family=Space+Grotesk:wght@300;400;700&family=Noto+Serif+JP:wght@300;400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: #0f0f0f;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 60px 24px;
+    gap: 0;
+    font-family: 'DM Sans', sans-serif;
+  }
+
+  h1 {
+    color: #fff;
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 300;
+    font-size: 13px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    margin-bottom: 48px;
+    opacity: 0.4;
+  }
+
+  .cards {
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+    width: 100%;
+    max-width: 560px;
+  }
+
+  /* ── label ── */
+  .style-label {
+    font-size: 10px;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+    opacity: 0.5;
+    color: #fff;
+    font-family: 'DM Mono', monospace;
+  }
+
+  /* ═══════════════════════════════
+     1. BAUHAUS / SWISS
+  ═══════════════════════════════ */
+  .card-bauhaus {
+    background: #F5F0E8;
+    padding: 36px;
+    position: relative;
+    overflow: hidden;
+  }
+  .card-bauhaus::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 8px; height: 100%;
+    background: #E63329;
+  }
+  .card-bauhaus .bh-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 64px;
+    line-height: 0.9;
+    color: #111;
+    letter-spacing: 0.02em;
+    padding-left: 20px;
+  }
+  .card-bauhaus .bh-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 8px;
+    margin-top: 20px;
+    padding-left: 20px;
+  }
+  .bh-block {
+    height: 6px;
+    background: #111;
+  }
+  .bh-block:nth-child(2) { background: #E63329; }
+  .bh-block:nth-child(3) { background: #F2C013; }
+  .card-bauhaus .bh-body {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 12px;
+    color: #555;
+    margin-top: 16px;
+    padding-left: 20px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    font-weight: 500;
+  }
+  .card-bauhaus .bh-stats {
+    display: flex;
+    gap: 24px;
+    margin-top: 24px;
+    padding-left: 20px;
+  }
+  .bh-stat-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 36px;
+    color: #111;
+    line-height: 1;
+  }
+  .bh-stat-label {
+    font-size: 9px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: #999;
+    margin-top: 2px;
+  }
+  .bh-circle {
+    position: absolute;
+    bottom: -30px; right: -30px;
+    width: 120px; height: 120px;
+    border-radius: 50%;
+    border: 8px solid #E63329;
+    opacity: 0.3;
+  }
+
+  /* ═══════════════════════════════
+     2. ANALOG / PAPER
+  ═══════════════════════════════ */
+  .card-paper {
+    background: #F9F4EC;
+    padding: 36px;
+    position: relative;
+    border: 1px solid #DDD5C8;
+    box-shadow: 0 2px 0 #DDD5C8, 0 4px 0 #CEC5B5;
+  }
+  .card-paper::after {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='4' height='4'%3E%3Crect width='4' height='4' fill='%23F9F4EC'/%3E%3Ccircle cx='1' cy='1' r='0.5' fill='%23C8BFB0' opacity='0.3'/%3E%3C/svg%3E");
+    pointer-events: none;
+  }
+  .card-paper .pp-date {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: #A89880;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+  }
+  .card-paper .pp-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 38px;
+    color: #2C2318;
+    line-height: 1.1;
+    margin-top: 8px;
+    font-style: italic;
+  }
+  .card-paper .pp-divider {
+    width: 40px;
+    height: 1px;
+    background: #A89880;
+    margin: 16px 0;
+  }
+  .card-paper .pp-body {
+    font-family: 'Lora', serif;
+    font-size: 13.5px;
+    color: #5C4F3D;
+    line-height: 1.75;
+  }
+  .card-paper .pp-tasks {
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .pp-task {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-family: 'Lora', serif;
+    font-size: 13px;
+    color: #5C4F3D;
+  }
+  .pp-task::before {
+    content: '○';
+    font-size: 10px;
+    color: #A89880;
+    flex-shrink: 0;
+  }
+  .pp-task.done { text-decoration: line-through; color: #B0A090; }
+  .pp-task.done::before { content: '●'; color: #A89880; }
+
+  /* ═══════════════════════════════
+     3. GLASSMORPHISM / LIQUID
+  ═══════════════════════════════ */
+  .card-glass-wrap {
+    position: relative;
+    border-radius: 24px;
+    overflow: hidden;
+  }
+  .card-glass-bg {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, #6B21A8 0%, #C026D3 40%, #0EA5E9 100%);
+  }
+  .card-glass-bg::before {
+    content: '';
+    position: absolute;
+    width: 200px; height: 200px;
+    border-radius: 50%;
+    background: rgba(251,113,133,0.5);
+    top: -60px; right: -40px;
+    filter: blur(50px);
+  }
+  .card-glass-bg::after {
+    content: '';
+    position: absolute;
+    width: 150px; height: 150px;
+    border-radius: 50%;
+    background: rgba(34,211,238,0.4);
+    bottom: -40px; left: 20px;
+    filter: blur(40px);
+  }
+  .card-glass {
+    position: relative;
+    z-index: 1;
+    background: rgba(255,255,255,0.08);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 24px;
+    padding: 32px;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.2);
+  }
+  .gl-tag {
+    display: inline-block;
+    background: rgba(255,255,255,0.15);
+    border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 100px;
+    padding: 4px 14px;
+    font-size: 11px;
+    color: rgba(255,255,255,0.8);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+  .gl-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 42px;
+    font-weight: 800;
+    color: #fff;
+    line-height: 1;
+    margin-top: 12px;
+  }
+  .gl-subtitle {
+    color: rgba(255,255,255,0.55);
+    font-size: 13px;
+    margin-top: 6px;
+    letter-spacing: 0.05em;
+  }
+  .gl-cards {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-top: 22px;
+  }
+  .gl-mini {
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 14px;
+    padding: 14px;
+    backdrop-filter: blur(10px);
+  }
+  .gl-mini-num {
+    font-family: 'Syne', sans-serif;
+    font-size: 30px;
+    font-weight: 700;
+    color: #fff;
+  }
+  .gl-mini-label {
+    font-size: 11px;
+    color: rgba(255,255,255,0.5);
+    margin-top: 2px;
+  }
+  .gl-bar-wrap {
+    margin-top: 18px;
+    height: 4px;
+    background: rgba(255,255,255,0.1);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+  .gl-bar {
+    height: 100%;
+    width: 68%;
+    background: linear-gradient(90deg, #F0ABFC, #38BDF8);
+    border-radius: 2px;
+  }
+  .gl-bar-label {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 6px;
+    font-size: 10px;
+    color: rgba(255,255,255,0.4);
+  }
+
+  /* ═══════════════════════════════
+     4. NEO-BRUTALISM
+  ═══════════════════════════════ */
+  .card-brutal {
+    background: #FFE951;
+    border: 3px solid #0A0A0A;
+    box-shadow: 6px 6px 0 #0A0A0A;
+    padding: 32px;
+    position: relative;
+  }
+  .nb-badge {
+    display: inline-block;
+    background: #0A0A0A;
+    color: #FFE951;
+    font-family: 'Syne', sans-serif;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    padding: 4px 10px;
+    margin-bottom: 12px;
+  }
+  .nb-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 52px;
+    font-weight: 800;
+    color: #0A0A0A;
+    line-height: 0.95;
+    text-transform: uppercase;
+  }
+  .nb-divider {
+    height: 3px;
+    background: #0A0A0A;
+    margin: 16px 0;
+  }
+  .nb-tasks {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .nb-task {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-family: 'Syne', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    color: #0A0A0A;
+    background: #fff;
+    border: 2px solid #0A0A0A;
+    padding: 8px 12px;
+  }
+  .nb-check {
+    width: 16px; height: 16px;
+    border: 2px solid #0A0A0A;
+    background: #FF3B30;
+    flex-shrink: 0;
+  }
+  .nb-check.done { background: #0A0A0A; }
+  .nb-corner {
+    position: absolute;
+    bottom: -3px; right: -3px;
+    width: 0; height: 0;
+  }
+
+  /* ═══════════════════════════════
+     5. MINIMALISMO GIAPPONESE
+  ═══════════════════════════════ */
+  .card-jp {
+    background: #FAFAF8;
+    border: 1px solid #E8E5DF;
+    padding: 40px 36px;
+    position: relative;
+  }
+  .jp-line-top {
+    position: absolute;
+    top: 0; left: 36px; right: 36px;
+    height: 2px;
+    background: #1A1A1A;
+  }
+  .jp-kanji {
+    font-family: 'Noto Serif JP', serif;
+    font-size: 11px;
+    color: #B0A898;
+    letter-spacing: 0.3em;
+    margin-bottom: 20px;
+  }
+  .jp-title {
+    font-family: 'Noto Serif JP', serif;
+    font-size: 36px;
+    font-weight: 300;
+    color: #1A1A1A;
+    line-height: 1.4;
+    letter-spacing: 0.02em;
+  }
+  .jp-body {
+    font-family: 'Noto Serif JP', serif;
+    font-size: 12px;
+    color: #8A8078;
+    line-height: 2;
+    margin-top: 16px;
+    font-weight: 300;
+    letter-spacing: 0.05em;
+  }
+  .jp-items {
+    margin-top: 28px;
+    display: flex;
+    flex-direction: column;
+  }
+  .jp-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    padding: 12px 0;
+    border-bottom: 1px solid #E8E5DF;
+    font-family: 'Noto Serif JP', serif;
+  }
+  .jp-item:first-child { border-top: 1px solid #E8E5DF; }
+  .jp-item-name {
+    font-size: 13px;
+    color: #1A1A1A;
+    font-weight: 400;
+    letter-spacing: 0.05em;
+  }
+  .jp-item-val {
+    font-size: 11px;
+    color: #B0A898;
+    letter-spacing: 0.1em;
+  }
+  .jp-accent {
+    position: absolute;
+    bottom: 24px; right: 36px;
+    width: 20px; height: 20px;
+    background: #C8B560;
+    border-radius: 50%;
+  }
+
+  /* Entrance animation */
+  .card-unit {
+    opacity: 0;
+    transform: translateY(20px);
+    animation: fadeUp 0.5s ease forwards;
+  }
+  .card-unit:nth-child(1) { animation-delay: 0.05s; }
+  .card-unit:nth-child(2) { animation-delay: 0.15s; }
+  .card-unit:nth-child(3) { animation-delay: 0.25s; }
+  .card-unit:nth-child(4) { animation-delay: 0.35s; }
+  .card-unit:nth-child(5) { animation-delay: 0.45s; }
+
+  @keyframes fadeUp {
+    to { opacity: 1; transform: translateY(0); }
+  }
+</style>
+</head>
+<body>
+<h1>Style Preview — Life OS</h1>
+
+<div class="cards">
+
+  <!-- 1. BAUHAUS -->
+  <div class="card-unit">
+    <div class="style-label">01 — Bauhaus / Swiss Design</div>
+    <div class="card-bauhaus">
+      <div class="bh-circle"></div>
+      <div class="bh-title">LIFE<br>OS</div>
+      <div class="bh-grid">
+        <div class="bh-block"></div>
+        <div class="bh-block"></div>
+        <div class="bh-block"></div>
+      </div>
+      <div class="bh-body">01 / Marzo 2026 — Focus Mode</div>
+      <div class="bh-stats">
+        <div>
+          <div class="bh-stat-num">7</div>
+          <div class="bh-stat-label">Task oggi</div>
+        </div>
+        <div>
+          <div class="bh-stat-num">3</div>
+          <div class="bh-stat-label">Completate</div>
+        </div>
+        <div>
+          <div class="bh-stat-num">82%</div>
+          <div class="bh-stat-label">Weekly goal</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. ANALOG / PAPER -->
+  <div class="card-unit">
+    <div class="style-label">02 — Analog / Paper UI</div>
+    <div class="card-paper">
+      <div class="pp-date">Domenica, 1 Marzo 2026</div>
+      <div class="pp-title">La mia giornata</div>
+      <div class="pp-divider"></div>
+      <div class="pp-body">Un momento di ordine tra il caos quotidiano.</div>
+      <div class="pp-tasks">
+        <div class="pp-task done">Meditazione mattutina</div>
+        <div class="pp-task done">Revisione obiettivi settimanali</div>
+        <div class="pp-task">Chiamata con Marco</div>
+        <div class="pp-task">Aggiornare journal</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3. GLASSMORPHISM -->
+  <div class="card-unit">
+    <div class="style-label">03 — Glassmorphism / Liquid</div>
+    <div class="card-glass-wrap">
+      <div class="card-glass-bg"></div>
+      <div class="card-glass">
+        <span class="gl-tag">Marzo 2026</span>
+        <div class="gl-title">Focus<br>Week</div>
+        <div class="gl-subtitle">Tu stai costruendo qualcosa di grande.</div>
+        <div class="gl-cards">
+          <div class="gl-mini">
+            <div class="gl-mini-num">12</div>
+            <div class="gl-mini-label">Ore deep work</div>
+          </div>
+          <div class="gl-mini">
+            <div class="gl-mini-num">5/7</div>
+            <div class="gl-mini-label">Abitudini</div>
+          </div>
+        </div>
+        <div class="gl-bar-wrap">
+          <div class="gl-bar"></div>
+        </div>
+        <div class="gl-bar-label">
+          <span>Progresso mensile</span>
+          <span>68%</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4. NEO-BRUTALISM -->
+  <div class="card-unit">
+    <div class="style-label">04 — Neo-Brutalism</div>
+    <div class="card-brutal">
+      <div class="nb-badge">★ Today</div>
+      <div class="nb-title">GET IT<br>DONE</div>
+      <div class="nb-divider"></div>
+      <div class="nb-tasks">
+        <div class="nb-task"><div class="nb-check done"></div>Sveglia 6:30</div>
+        <div class="nb-task"><div class="nb-check done"></div>Workout</div>
+        <div class="nb-task"><div class="nb-check"></div>Deep work 2h</div>
+        <div class="nb-task"><div class="nb-check"></div>No scroll dopo le 21</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 5. MINIMALISMO GIAPPONESE -->
+  <div class="card-unit">
+    <div class="style-label">05 — Minimalismo Giapponese</div>
+    <div class="card-jp">
+      <div class="jp-line-top"></div>
+      <div class="jp-kanji">生活 · 整理 · 静寂</div>
+      <div class="jp-title">Oggi,<br>con calma.</div>
+      <div class="jp-body">Ogni giorno porta con sé nuove possibilità.<br>Procedi con intenzione.</div>
+      <div class="jp-items">
+        <div class="jp-item">
+          <span class="jp-item-name">Mattino</span>
+          <span class="jp-item-val">Meditazione · Lettura</span>
+        </div>
+        <div class="jp-item">
+          <span class="jp-item-name">Pomeriggio</span>
+          <span class="jp-item-val">Lavoro profondo</span>
+        </div>
+        <div class="jp-item">
+          <span class="jp-item-name">Sera</span>
+          <span class="jp-item-val">Riflessione · Riposo</span>
+        </div>
+      </div>
+      <div class="jp-accent"></div>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>
