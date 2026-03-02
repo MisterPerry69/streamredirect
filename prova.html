@@ -3,746 +3,203 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Dark Style Variants</title>
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=Noto+Serif+JP:wght@200;300;400&family=DM+Mono:wght@300;400;500&family=Fraunces:ital,opsz,wght@0,9..144,200;0,9..144,700;1,9..144,300&family=Space+Grotesk:wght@300;400;600;700&family=Cormorant+Garamond:ital,wght@0,300;0,600;1,300&display=swap" rel="stylesheet">
+<title>Style Preview</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=DM+Sans:wght@400;500;600&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-body {
-  background: #080808;
-  min-height: 100vh;
-  padding: 60px 24px 80px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0;
-}
-
-.page-label {
-  font-family: 'DM Mono', monospace;
-  font-size: 10px;
-  letter-spacing: 0.35em;
-  text-transform: uppercase;
-  color: rgba(255,255,255,0.2);
-  margin-bottom: 52px;
-}
-
-.cards {
-  display: flex;
-  flex-direction: column;
-  gap: 40px;
-  width: 100%;
-  max-width: 580px;
-}
-
-.card-unit {
-  opacity: 0;
-  transform: translateY(24px);
-  animation: up 0.6s cubic-bezier(.16,1,.3,1) forwards;
-}
-.card-unit:nth-child(1) { animation-delay: 0.1s; }
-.card-unit:nth-child(2) { animation-delay: 0.25s; }
-.card-unit:nth-child(3) { animation-delay: 0.4s; }
-@keyframes up { to { opacity:1; transform:translateY(0); } }
-
-.variant-tag {
-  font-family: 'DM Mono', monospace;
-  font-size: 9px;
-  letter-spacing: 0.3em;
-  text-transform: uppercase;
-  color: rgba(255,255,255,0.25);
-  margin-bottom: 10px;
-  display: block;
-}
-
-/* ═══════════════════════════════════════
-   VARIANT A — "AURORA"
-   Glass + Bauhaus geometry, northern lights
-═══════════════════════════════════════ */
-.aurora-wrap {
-  position: relative;
-  border-radius: 20px;
-  overflow: hidden;
-}
-.aurora-bg {
-  position: absolute; inset: 0;
-  background: #0D0F14;
-}
-.aurora-bg::before {
-  content: '';
-  position: absolute;
-  width: 340px; height: 340px;
-  border-radius: 50%;
-  background: radial-gradient(circle, rgba(56,189,248,0.18) 0%, transparent 70%);
-  top: -100px; left: -60px;
-}
-.aurora-bg::after {
-  content: '';
-  position: absolute;
-  width: 280px; height: 280px;
-  border-radius: 50%;
-  background: radial-gradient(circle, rgba(168,85,247,0.2) 0%, transparent 70%);
-  bottom: -80px; right: -40px;
-}
-.aurora-glow-mid {
-  position: absolute;
-  width: 200px; height: 200px;
-  border-radius: 50%;
-  background: radial-gradient(circle, rgba(16,185,129,0.12) 0%, transparent 70%);
-  top: 50%; left: 50%;
-  transform: translate(-50%,-50%);
-}
-.aurora-card {
-  position: relative; z-index: 1;
-  border: 1px solid rgba(255,255,255,0.07);
-  border-radius: 20px;
-  padding: 32px;
-  backdrop-filter: blur(30px);
-  background: rgba(255,255,255,0.03);
-}
-.au-top {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-}
-.au-tag {
-  font-family: 'DM Mono', monospace;
-  font-size: 9px;
-  letter-spacing: 0.25em;
-  color: rgba(56,189,248,0.8);
-  text-transform: uppercase;
-  border: 1px solid rgba(56,189,248,0.2);
-  padding: 4px 10px;
-  border-radius: 100px;
-}
-.au-geo {
-  display: flex;
-  gap: 6px;
-  align-items: center;
-}
-.au-dot { width: 6px; height: 6px; border-radius: 50%; }
-.au-dot:nth-child(1) { background: rgba(56,189,248,0.6); }
-.au-dot:nth-child(2) { background: rgba(168,85,247,0.6); }
-.au-dot:nth-child(3) { background: rgba(16,185,129,0.6); }
-
-.au-title {
-  font-family: 'Syne', sans-serif;
-  font-size: 52px;
-  font-weight: 800;
-  color: #fff;
-  line-height: 0.95;
-  margin-top: 20px;
-  letter-spacing: -0.02em;
-}
-.au-title span {
-  -webkit-text-stroke: 1px rgba(255,255,255,0.3);
-  color: transparent;
-}
-
-.au-rule {
-  height: 1px;
-  background: linear-gradient(90deg, rgba(56,189,248,0.4), rgba(168,85,247,0.4), transparent);
-  margin: 22px 0;
-}
-
-.au-grid {
-  display: grid;
-  grid-template-columns: repeat(3,1fr);
-  gap: 10px;
-}
-.au-cell {
-  background: rgba(255,255,255,0.04);
-  border: 1px solid rgba(255,255,255,0.06);
-  border-radius: 12px;
-  padding: 14px 12px;
-}
-.au-cell-num {
-  font-family: 'Syne', sans-serif;
-  font-size: 28px;
-  font-weight: 700;
-  color: #fff;
-  line-height: 1;
-}
-.au-cell-num.blue { color: #38BDF8; }
-.au-cell-num.purple { color: #C084FC; }
-.au-cell-num.green { color: #34D399; }
-.au-cell-label {
-  font-size: 9px;
-  font-family: 'DM Mono', monospace;
-  letter-spacing: 0.12em;
-  color: rgba(255,255,255,0.3);
-  text-transform: uppercase;
-  margin-top: 4px;
-}
-
-.au-bar-section { margin-top: 18px; }
-.au-bar-header {
-  display: flex;
-  justify-content: space-between;
-  font-family: 'DM Mono', monospace;
-  font-size: 9px;
-  letter-spacing: 0.15em;
-  color: rgba(255,255,255,0.3);
-  text-transform: uppercase;
-  margin-bottom: 8px;
-}
-.au-bars { display: flex; flex-direction: column; gap: 6px; }
-.au-bar-row { display: flex; align-items: center; gap: 10px; }
-.au-bar-name {
-  font-family: 'DM Mono', monospace;
-  font-size: 10px;
-  color: rgba(255,255,255,0.5);
-  width: 70px;
-  flex-shrink: 0;
-}
-.au-bar-track {
-  flex: 1; height: 4px;
-  background: rgba(255,255,255,0.06);
-  border-radius: 2px;
-  overflow: hidden;
-}
-.au-bar-fill {
-  height: 100%; border-radius: 2px;
-}
-.au-bar-fill.b1 { width: 82%; background: linear-gradient(90deg,#38BDF8,#818CF8); }
-.au-bar-fill.b2 { width: 65%; background: linear-gradient(90deg,#C084FC,#F472B6); }
-.au-bar-fill.b3 { width: 90%; background: linear-gradient(90deg,#34D399,#38BDF8); }
-.au-bar-pct {
-  font-family: 'DM Mono', monospace;
-  font-size: 9px;
-  color: rgba(255,255,255,0.3);
-  width: 28px;
-  text-align: right;
-}
-
-/* ═══════════════════════════════════════
-   VARIANT B — "SUMI"
-   Glass + Japan, ink on dark, gold accents
-═══════════════════════════════════════ */
-.sumi-wrap {
-  position: relative;
-  border-radius: 2px;
-  overflow: hidden;
-  background: #0C0B09;
-  border: 1px solid rgba(255,255,255,0.06);
-}
-.sumi-side {
-  position: absolute;
-  top: 0; left: 0;
-  width: 3px; height: 100%;
-  background: linear-gradient(180deg, #C8A84B, #8B6914, transparent);
-}
-.sumi-corner {
-  position: absolute;
-  top: 0; right: 0;
-  width: 80px; height: 80px;
-  border-left: 1px solid rgba(200,168,75,0.15);
-  border-bottom: 1px solid rgba(200,168,75,0.15);
-}
-.sumi-inner {
-  padding: 36px 36px 36px 44px;
-  position: relative; z-index:1;
-}
-.sumi-kana {
-  font-family: 'Noto Serif JP', serif;
-  font-size: 10px;
-  font-weight: 200;
-  letter-spacing: 0.5em;
-  color: rgba(200,168,75,0.5);
-  margin-bottom: 24px;
-  display: block;
-}
-.sumi-title {
-  font-family: 'Cormorant Garamond', serif;
-  font-size: 44px;
-  font-weight: 300;
-  color: #F5F0E4;
-  line-height: 1.15;
-  letter-spacing: 0.01em;
-}
-.sumi-title em {
-  font-style: italic;
-  color: rgba(200,168,75,0.9);
-}
-.sumi-divider {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin: 24px 0;
-}
-.sumi-line { flex:1; height: 1px; background: rgba(255,255,255,0.07); }
-.sumi-diamond {
-  width: 5px; height: 5px;
-  background: rgba(200,168,75,0.5);
-  transform: rotate(45deg);
-  flex-shrink: 0;
-}
-.sumi-items {
-  display: flex;
-  flex-direction: column;
-}
-.sumi-item {
-  display: flex;
-  justify-content: space-between;
-  align-items: baseline;
-  padding: 11px 0;
-  border-bottom: 1px solid rgba(255,255,255,0.05);
-  position: relative;
-}
-.sumi-item:last-child { border-bottom: none; }
-.sumi-item-dot {
-  position: absolute;
-  left: -16px;
-  top: 50%; transform: translateY(-50%);
-  width: 4px; height: 4px;
-  border-radius: 50%;
-  background: rgba(200,168,75,0.4);
-}
-.sumi-item-name {
-  font-family: 'Cormorant Garamond', serif;
-  font-size: 15px;
-  font-weight: 300;
-  color: rgba(245,240,228,0.8);
-  letter-spacing: 0.03em;
-}
-.sumi-item-jp {
-  font-family: 'Noto Serif JP', serif;
-  font-size: 10px;
-  font-weight: 200;
-  color: rgba(200,168,75,0.4);
-  letter-spacing: 0.2em;
-}
-.sumi-bottom {
-  margin-top: 28px;
-  display: flex;
-  gap: 20px;
-}
-.sumi-stat {
-  display: flex;
-  flex-direction: column;
-}
-.sumi-stat-num {
-  font-family: 'Cormorant Garamond', serif;
-  font-size: 32px;
-  font-weight: 600;
-  color: #C8A84B;
-  line-height: 1;
-}
-.sumi-stat-label {
-  font-family: 'Noto Serif JP', serif;
-  font-size: 9px;
-  font-weight: 200;
-  color: rgba(255,255,255,0.25);
-  letter-spacing: 0.2em;
-  margin-top: 3px;
-  text-transform: uppercase;
-}
-.sumi-glass-pill {
-  margin-top: 28px;
-  background: rgba(200,168,75,0.05);
-  border: 1px solid rgba(200,168,75,0.15);
-  border-radius: 2px;
-  padding: 12px 16px;
-  font-family: 'Noto Serif JP', serif;
-  font-size: 11px;
-  font-weight: 200;
-  color: rgba(200,168,75,0.6);
-  letter-spacing: 0.15em;
-  text-align: center;
-}
-
-/* ═══════════════════════════════════════
-   VARIANT C — "OBSIDIAN"
-   Something new: dark luxury, editorial,
-   high contrast type + geometric glass
-═══════════════════════════════════════ */
-.obsidian-wrap {
-  background: #111014;
-  border: 1px solid rgba(255,255,255,0.07);
-  border-radius: 4px;
-  position: relative;
-  overflow: hidden;
-}
-.obs-noise {
-  position: absolute; inset: 0;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
-  opacity: 0.4;
-  pointer-events: none;
-}
-.obs-accent-bar {
-  position: absolute;
-  top: 0; left: 0; right: 0;
-  height: 2px;
-  background: linear-gradient(90deg, transparent, #E8D5B0, #C8A87A, transparent);
-}
-.obs-inner {
-  padding: 36px;
-  position: relative; z-index: 1;
-}
-.obs-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-}
-.obs-date-block {
-  display: flex;
-  flex-direction: column;
-  gap: 3px;
-}
-.obs-day {
-  font-family: 'Fraunces', serif;
-  font-size: 64px;
-  font-weight: 700;
-  color: #fff;
-  line-height: 0.85;
-  letter-spacing: -0.03em;
-}
-.obs-month {
-  font-family: 'DM Mono', monospace;
-  font-size: 10px;
-  letter-spacing: 0.3em;
-  color: rgba(255,255,255,0.3);
-  text-transform: uppercase;
-  margin-top: 6px;
-}
-.obs-status-box {
-  background: rgba(232,213,176,0.05);
-  border: 1px solid rgba(232,213,176,0.15);
-  border-radius: 3px;
-  padding: 10px 14px;
-  text-align: right;
-}
-.obs-status-num {
-  font-family: 'Fraunces', serif;
-  font-size: 28px;
-  font-weight: 200;
-  color: #E8D5B0;
-  line-height: 1;
-}
-.obs-status-label {
-  font-family: 'DM Mono', monospace;
-  font-size: 8px;
-  letter-spacing: 0.2em;
-  color: rgba(232,213,176,0.4);
-  text-transform: uppercase;
-  margin-top: 3px;
-}
-
-.obs-divider {
-  height: 1px;
-  background: rgba(255,255,255,0.06);
-  margin: 28px 0;
-}
-
-.obs-title-row {
-  display: flex;
-  align-items: baseline;
-  gap: 16px;
-}
-.obs-big-text {
-  font-family: 'Fraunces', serif;
-  font-size: 38px;
-  font-weight: 200;
-  color: #F5EFE4;
-  line-height: 1.1;
-  font-style: italic;
-}
-.obs-big-text strong {
-  font-style: normal;
-  font-weight: 700;
-  color: #fff;
-}
-
-.obs-tasks {
-  margin-top: 24px;
-  display: flex;
-  flex-direction: column;
-  gap: 0;
-}
-.obs-task {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 13px 0;
-  border-bottom: 1px solid rgba(255,255,255,0.05);
-}
-.obs-task:first-child { border-top: 1px solid rgba(255,255,255,0.05); }
-.obs-task-left {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-.obs-check {
-  width: 18px; height: 18px;
-  border: 1px solid rgba(232,213,176,0.2);
-  border-radius: 2px;
-  flex-shrink: 0;
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-.obs-check.filled {
-  background: rgba(232,213,176,0.08);
-  border-color: rgba(232,213,176,0.4);
-}
-.obs-check.filled::after {
-  content: '';
-  width: 6px; height: 6px;
-  background: #E8D5B0;
-  border-radius: 1px;
-  transform: rotate(45deg);
-}
-.obs-task-name {
-  font-family: 'Fraunces', serif;
-  font-size: 14px;
-  font-weight: 300;
-  color: rgba(245,239,228,0.7);
-  letter-spacing: 0.01em;
-}
-.obs-task.done .obs-task-name {
-  color: rgba(245,239,228,0.3);
-  text-decoration: line-through;
-  text-decoration-color: rgba(255,255,255,0.15);
-}
-.obs-task-time {
-  font-family: 'DM Mono', monospace;
-  font-size: 9px;
-  letter-spacing: 0.15em;
-  color: rgba(255,255,255,0.2);
-}
-
-.obs-bottom {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 10px;
-  margin-top: 24px;
-}
-.obs-mini {
-  background: rgba(255,255,255,0.02);
-  border: 1px solid rgba(255,255,255,0.05);
-  border-radius: 3px;
-  padding: 14px;
-  position: relative;
-  overflow: hidden;
-}
-.obs-mini::before {
-  content: '';
-  position: absolute;
-  top: 0; left: 0;
-  width: 2px; height: 100%;
-  background: linear-gradient(180deg, #E8D5B0, transparent);
-  opacity: 0.4;
-}
-.obs-mini-val {
-  font-family: 'Fraunces', serif;
-  font-size: 26px;
-  font-weight: 200;
-  color: #E8D5B0;
-  line-height: 1;
-}
-.obs-mini-key {
-  font-family: 'DM Mono', monospace;
-  font-size: 8px;
-  letter-spacing: 0.18em;
-  color: rgba(255,255,255,0.25);
-  text-transform: uppercase;
-  margin-top: 5px;
-}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { background: #111; font-family: 'Inter', sans-serif; color: #fff; }
+.page { display: flex; flex-direction: column; align-items: center; padding: 40px 20px; gap: 60px; }
+.stitle { font-size: 11px; letter-spacing: 3px; text-transform: uppercase; color: #555; margin-bottom: 24px; text-align: center; }
+.phone { width: 320px; height: 620px; border-radius: 44px; overflow: hidden; position: relative; box-shadow: 0 40px 80px rgba(0,0,0,0.7); }
+.block { display: flex; flex-direction: column; align-items: center; }
+.tags { display: flex; gap: 8px; margin: 20px 0 10px; flex-wrap: wrap; justify-content: center; }
+.tag { padding: 5px 14px; border-radius: 20px; font-size: 11px; border: 1.5px solid #333; color: #555; }
+.desc { font-size: 12px; color: #444; max-width: 300px; text-align: center; line-height: 1.6; }
+/* T1 */
+.t1{background:#0f0f0f;height:100%;overflow:hidden;font-family:'Inter',sans-serif;}
+.t1 .hdr{padding:28px 20px 16px;}
+.t1 .hdr small{font-size:10px;color:#555;letter-spacing:1px;display:block;margin-bottom:4px;}
+.t1 .hdr h1{font-size:26px;font-weight:600;}
+.t1 .hdr .on{font-size:11px;color:#3b82f6;margin-top:3px;}
+.t1 .card{margin:0 16px;background:#1a1a1a;border-radius:20px;padding:20px;border:1px solid #242424;}
+.t1 .card .lbl{font-size:10px;color:#555;margin-bottom:6px;}
+.t1 .card .amt{font-size:32px;font-weight:700;letter-spacing:-1px;}
+.t1 .card .row{display:flex;gap:8px;margin-top:14px;}
+.t1 .card .si{flex:1;background:#222;border-radius:10px;padding:10px;}
+.t1 .card .si .sl{font-size:8px;color:#555;margin-bottom:3px;}
+.t1 .card .si .sv{font-size:12px;font-weight:600;color:#3b82f6;}
+.t1 .grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:12px 16px;}
+.t1 .gi{background:#1a1a1a;border-radius:16px;padding:16px;border:1px solid #242424;}
+.t1 .gi .ic{font-size:20px;margin-bottom:8px;}
+.t1 .gi .gl{font-size:10px;color:#555;margin-bottom:3px;}
+.t1 .gi .gv{font-size:15px;font-weight:600;}
+.t1 .bnav{position:absolute;bottom:0;left:0;right:0;background:#0f0f0f;border-top:1px solid #1a1a1a;display:flex;padding:12px 0 22px;}
+.t1 .bnav .ni{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;}
+.t1 .bnav .ni .d{width:20px;height:20px;border-radius:6px;background:#1a1a1a;}
+.t1 .bnav .ni .d.on{background:#3b82f6;}
+.t1 .bnav .ni span{font-size:7px;color:#444;}
+.t1 .bnav .ni span.on{color:#3b82f6;}
+/* T2 */
+.t2{background:#111008;height:100%;overflow:hidden;font-family:'DM Sans',sans-serif;}
+.t2 .hdr{padding:28px 20px 16px;display:flex;justify-content:space-between;align-items:flex-start;}
+.t2 .hdr small{font-size:10px;color:#6b6550;display:block;margin-bottom:4px;}
+.t2 .hdr h1{font-size:24px;font-weight:600;}
+.t2 .hdr .badge{background:rgba(245,166,35,0.12);color:#f5a623;font-size:10px;padding:5px 11px;border-radius:20px;white-space:nowrap;margin-top:4px;}
+.t2 .card{margin:0 16px;background:linear-gradient(135deg,#1e1c14,#1a1810);border-radius:22px;padding:20px;border:1px solid #2a2720;}
+.t2 .card .lbl{font-size:10px;color:#6b6550;margin-bottom:6px;}
+.t2 .card .amt{font-size:34px;font-weight:700;letter-spacing:-1px;}
+.t2 .card .line{width:40px;height:3px;background:#f5a623;border-radius:2px;margin-top:12px;}
+.t2 .card .row{display:flex;gap:8px;margin-top:14px;}
+.t2 .card .si{flex:1;background:rgba(255,255,255,0.04);border-radius:10px;padding:10px;}
+.t2 .card .si .sl{font-size:8px;color:#6b6550;margin-bottom:3px;}
+.t2 .card .si .sv{font-size:12px;font-weight:600;color:#f5a623;}
+.t2 .slbl{margin:14px 16px 8px;font-size:10px;color:#6b6550;letter-spacing:1px;text-transform:uppercase;}
+.t2 .txl{margin:0 16px;display:flex;flex-direction:column;gap:8px;}
+.t2 .txi{background:#1a1810;border-radius:12px;padding:12px 14px;display:flex;justify-content:space-between;align-items:center;border:1px solid #2a2720;}
+.t2 .txi .tn{font-size:13px;font-weight:500;}
+.t2 .txi .tc{font-size:10px;color:#6b6550;margin-top:2px;}
+.t2 .txi .ta{font-size:14px;font-weight:600;}
+.t2 .txi .ta.n{color:#ff6b6b;}
+.t2 .txi .ta.p{color:#f5a623;}
+.t2 .bnav{position:absolute;bottom:0;left:0;right:0;background:#111008;border-top:1px solid #1e1c14;display:flex;padding:12px 0 22px;}
+.t2 .bnav .ni{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;}
+.t2 .bnav .ni .d{width:20px;height:20px;border-radius:6px;background:#1a1810;}
+.t2 .bnav .ni .d.on{background:#f5a623;}
+.t2 .bnav .ni span{font-size:7px;color:#444;}
+.t2 .bnav .ni span.on{color:#f5a623;}
+/* T3 */
+.t3{background:#08080f;height:100%;overflow:hidden;font-family:'Space Grotesk',sans-serif;}
+.t3 .hdr{padding:28px 20px 14px;}
+.t3 .hdr .pill{display:inline-flex;align-items:center;gap:6px;background:rgba(139,92,246,0.12);border:1px solid rgba(139,92,246,0.25);color:#a78bfa;font-size:10px;padding:4px 10px;border-radius:20px;margin-bottom:10px;}
+.t3 .hdr .pill .d{width:5px;height:5px;border-radius:50%;background:#a78bfa;}
+.t3 .hdr h1{font-size:28px;font-weight:700;background:linear-gradient(135deg,#fff 0%,#a78bfa 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.t3 .card{margin:0 16px;background:linear-gradient(135deg,#1a0f2e,#0f0a1e);border-radius:24px;padding:20px;border:1px solid rgba(139,92,246,0.2);position:relative;overflow:hidden;}
+.t3 .card::before{content:'';position:absolute;top:-40px;right:-40px;width:120px;height:120px;background:radial-gradient(circle,rgba(139,92,246,0.25),transparent 70%);pointer-events:none;}
+.t3 .card .lbl{font-size:10px;color:#6b5b8a;margin-bottom:6px;letter-spacing:1px;text-transform:uppercase;}
+.t3 .card .amt{font-size:34px;font-weight:700;letter-spacing:-2px;}
+.t3 .card .amt span{color:#a78bfa;font-size:20px;}
+.t3 .card .row{display:flex;gap:8px;margin-top:14px;}
+.t3 .card .si{flex:1;background:rgba(139,92,246,0.08);border-radius:12px;padding:9px;border:1px solid rgba(139,92,246,0.15);}
+.t3 .card .si .sl{font-size:8px;color:#6b5b8a;margin-bottom:2px;text-transform:uppercase;}
+.t3 .card .si .sv{font-size:11px;font-weight:700;color:#a78bfa;}
+.t3 .grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:12px 16px;}
+.t3 .gi{background:#0f0d1a;border-radius:18px;padding:16px;border:1px solid #1f1a35;}
+.t3 .gi .ic{font-size:18px;margin-bottom:8px;}
+.t3 .gi .gl{font-size:9px;color:#6b5b8a;letter-spacing:1px;text-transform:uppercase;margin-bottom:3px;}
+.t3 .gi .gv{font-size:16px;font-weight:700;}
+.t3 .bnav{position:absolute;bottom:0;left:0;right:0;background:rgba(8,8,15,0.97);border-top:1px solid #1f1a35;display:flex;padding:12px 0 22px;}
+.t3 .bnav .ni{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;}
+.t3 .bnav .ni .d{width:20px;height:20px;border-radius:8px;background:#0f0d1a;}
+.t3 .bnav .ni .d.on{background:linear-gradient(135deg,#7c3aed,#a78bfa);}
+.t3 .bnav .ni span{font-size:7px;color:#444;}
+.t3 .bnav .ni span.on{color:#a78bfa;}
 </style>
 </head>
 <body>
-
-<div class="page-label">Dark Style Variants — Life OS</div>
-
-<div class="cards">
-
-  <!-- A: AURORA -->
-  <div class="card-unit">
-    <span class="variant-tag">A — Aurora · Glass + Bauhaus + Chromatic</span>
-    <div class="aurora-wrap">
-      <div class="aurora-bg">
-        <div class="aurora-glow-mid"></div>
-      </div>
-      <div class="aurora-card">
-        <div class="au-top">
-          <span class="au-tag">01 Marzo 2026</span>
-          <div class="au-geo">
-            <div class="au-dot"></div>
-            <div class="au-dot"></div>
-            <div class="au-dot"></div>
-          </div>
-        </div>
-
-        <div class="au-title">LIFE<br><span>SYS</span></div>
-
-        <div class="au-rule"></div>
-
-        <div class="au-grid">
-          <div class="au-cell">
-            <div class="au-cell-num blue">7</div>
-            <div class="au-cell-label">Task</div>
-          </div>
-          <div class="au-cell">
-            <div class="au-cell-num purple">82%</div>
-            <div class="au-cell-label">Focus</div>
-          </div>
-          <div class="au-cell">
-            <div class="au-cell-num green">5/7</div>
-            <div class="au-cell-label">Habits</div>
-          </div>
-        </div>
-
-        <div class="au-bar-section">
-          <div class="au-bar-header">
-            <span>Weekly progress</span>
-            <span>Settimana 9</span>
-          </div>
-          <div class="au-bars">
-            <div class="au-bar-row">
-              <span class="au-bar-name">Lavoro</span>
-              <div class="au-bar-track"><div class="au-bar-fill b1"></div></div>
-              <span class="au-bar-pct">82%</span>
-            </div>
-            <div class="au-bar-row">
-              <span class="au-bar-name">Salute</span>
-              <div class="au-bar-track"><div class="au-bar-fill b2"></div></div>
-              <span class="au-bar-pct">65%</span>
-            </div>
-            <div class="au-bar-row">
-              <span class="au-bar-name">Mindset</span>
-              <div class="au-bar-track"><div class="au-bar-fill b3"></div></div>
-              <span class="au-bar-pct">90%</span>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+<div class="page">
+  <div style="text-align:center;padding-top:10px;">
+    <div style="font-size:22px;font-weight:700;margin-bottom:8px;">Style Preview</div>
+    <div style="font-size:13px;color:#444;">3 direzioni — stessa struttura, look completamente diverso</div>
   </div>
 
-  <!-- B: SUMI -->
-  <div class="card-unit">
-    <span class="variant-tag">B — Sumi · Glass + Japan + Gold ink</span>
-    <div class="sumi-wrap">
-      <div class="sumi-side"></div>
-      <div class="sumi-corner"></div>
-      <div class="sumi-inner">
-        <span class="sumi-kana">生活 · 整理 · 集中</span>
-        <div class="sumi-title">La mia vita,<br><em>con intenzione</em></div>
-
-        <div class="sumi-divider">
-          <div class="sumi-line"></div>
-          <div class="sumi-diamond"></div>
-          <div class="sumi-line"></div>
-        </div>
-
-        <div class="sumi-items">
-          <div class="sumi-item">
-            <div class="sumi-item-dot"></div>
-            <span class="sumi-item-name">Meditazione</span>
-            <span class="sumi-item-jp">瞑想</span>
-          </div>
-          <div class="sumi-item">
-            <div class="sumi-item-dot"></div>
-            <span class="sumi-item-name">Deep work</span>
-            <span class="sumi-item-jp">集中</span>
-          </div>
-          <div class="sumi-item">
-            <div class="sumi-item-dot"></div>
-            <span class="sumi-item-name">Riflessione serale</span>
-            <span class="sumi-item-jp">振り返り</span>
-          </div>
-        </div>
-
-        <div class="sumi-bottom">
-          <div class="sumi-stat">
-            <span class="sumi-stat-num">12</span>
-            <span class="sumi-stat-label">Ore focus</span>
-          </div>
-          <div class="sumi-stat">
-            <span class="sumi-stat-num">5</span>
-            <span class="sumi-stat-label">Giorni streak</span>
-          </div>
-          <div class="sumi-stat">
-            <span class="sumi-stat-num">93%</span>
-            <span class="sumi-stat-label">Completion</span>
-          </div>
-        </div>
-
-        <div class="sumi-glass-pill">一歩一歩 · Un passo alla volta</div>
-      </div>
-    </div>
-  </div>
-
-  <!-- C: OBSIDIAN -->
-  <div class="card-unit">
-    <span class="variant-tag">C — Obsidian · Dark luxury editorial · Qualcosa di nuovo</span>
-    <div class="obsidian-wrap">
-      <div class="obs-noise"></div>
-      <div class="obs-accent-bar"></div>
-      <div class="obs-inner">
-        <div class="obs-header">
-          <div class="obs-date-block">
-            <div class="obs-day">01</div>
-            <div class="obs-month">Marzo · 2026</div>
-          </div>
-          <div class="obs-status-box">
-            <div class="obs-status-num">68%</div>
-            <div class="obs-status-label">Settimana</div>
-          </div>
-        </div>
-
-        <div class="obs-divider"></div>
-
-        <div class="obs-big-text">
-          <strong>Costruisci</strong><br>la versione<br>migliore.
-        </div>
-
-        <div class="obs-tasks">
-          <div class="obs-task done">
-            <div class="obs-task-left">
-              <div class="obs-check filled"></div>
-              <span class="obs-task-name">Workout mattutino</span>
-            </div>
-            <span class="obs-task-time">06:30</span>
-          </div>
-          <div class="obs-task done">
-            <div class="obs-task-left">
-              <div class="obs-check filled"></div>
-              <span class="obs-task-name">Revisione settimanale</span>
-            </div>
-            <span class="obs-task-time">09:00</span>
-          </div>
-          <div class="obs-task">
-            <div class="obs-task-left">
-              <div class="obs-check"></div>
-              <span class="obs-task-name">Deep work — Progetto X</span>
-            </div>
-            <span class="obs-task-time">14:00</span>
-          </div>
-          <div class="obs-task">
-            <div class="obs-task-left">
-              <div class="obs-check"></div>
-              <span class="obs-task-name">Journal serale</span>
-            </div>
-            <span class="obs-task-time">21:30</span>
-          </div>
-        </div>
-
-        <div class="obs-bottom">
-          <div class="obs-mini">
-            <div class="obs-mini-val">14h</div>
-            <div class="obs-mini-key">Focus totale</div>
-          </div>
-          <div class="obs-mini">
-            <div class="obs-mini-val">5/7</div>
-            <div class="obs-mini-key">Abitudini</div>
-          </div>
+  <div class="block">
+    <div class="stitle">01 — Dark Minimal</div>
+    <div class="phone"><div class="t1">
+      <div class="hdr"><small>LUN, 2 MARZO 2026</small><h1>Life OS</h1><div class="on">● Sync active</div></div>
+      <div class="card">
+        <div class="lbl">TOTAL ASSETS</div><div class="amt">€ 3.240</div>
+        <div class="row">
+          <div class="si"><div class="sl">BANK</div><div class="sv">2.800</div></div>
+          <div class="si"><div class="sl">TINABA</div><div class="sv">200</div></div>
+          <div class="si"><div class="sl">CASH</div><div class="sv">240</div></div>
         </div>
       </div>
-    </div>
+      <div style="height:12px"></div>
+      <div class="grid">
+        <div class="gi"><div class="ic">🧠</div><div class="gl">Brain Dump</div><div class="gv">12 note</div></div>
+        <div class="gi"><div class="ic">💳</div><div class="gl">Credits</div><div class="gv">-€ 340</div></div>
+        <div class="gi"><div class="ic">💪</div><div class="gl">Body</div><div class="gv">94.5 kg</div></div>
+        <div class="gi"><div class="ic">🎬</div><div class="gl">Reviews</div><div class="gv">8 log</div></div>
+      </div>
+      <div class="bnav">
+        <div class="ni"><div class="d on"></div><span class="on">HOME</span></div>
+        <div class="ni"><div class="d"></div><span>BRAIN</span></div>
+        <div class="ni"><div class="d"></div><span>CREDITS</span></div>
+        <div class="ni"><div class="d"></div><span>BODY</span></div>
+        <div class="ni"><div class="d"></div><span>REVIEW</span></div>
+      </div>
+    </div></div>
+    <div class="tags"><div class="tag">Inter</div><div class="tag">#0f0f0f</div><div class="tag">Blue #3b82f6</div></div>
+    <div class="desc">Pulito, iOS-like. Card arrotondate, niente decorazioni. Sembra un'app nativa.</div>
   </div>
 
+  <div class="block">
+    <div class="stitle">02 — Dark Warm</div>
+    <div class="phone"><div class="t2">
+      <div class="hdr">
+        <div><small>Lun, 2 Marzo 2026</small><h1>Life OS</h1></div>
+        <div class="badge">● Online</div>
+      </div>
+      <div class="card">
+        <div class="lbl">Total Assets</div><div class="amt">€ 3.240</div><div class="line"></div>
+        <div class="row">
+          <div class="si"><div class="sl">BANK</div><div class="sv">2.800</div></div>
+          <div class="si"><div class="sl">TINABA</div><div class="sv">200</div></div>
+          <div class="si"><div class="sl">CASH</div><div class="sv">240</div></div>
+        </div>
+      </div>
+      <div class="slbl">Ultimi movimenti</div>
+      <div class="txl">
+        <div class="txi"><div><div class="tn">Pizza</div><div class="tc">CIBO</div></div><div class="ta n">-€ 14</div></div>
+        <div class="txi"><div><div class="tn">Stipendio</div><div class="tc">ENTRATE</div></div><div class="ta p">+€ 1.500</div></div>
+        <div class="txi"><div><div class="tn">Netflix</div><div class="tc">SVAGO</div></div><div class="ta n">-€ 18</div></div>
+      </div>
+      <div class="bnav">
+        <div class="ni"><div class="d on"></div><span class="on">HOME</span></div>
+        <div class="ni"><div class="d"></div><span>BRAIN</span></div>
+        <div class="ni"><div class="d"></div><span>CREDITS</span></div>
+        <div class="ni"><div class="d"></div><span>BODY</span></div>
+        <div class="ni"><div class="d"></div><span>REVIEW</span></div>
+      </div>
+    </div></div>
+    <div class="tags"><div class="tag">DM Sans</div><div class="tag">#111008</div><div class="tag">Amber #f5a623</div></div>
+    <div class="desc">Caldo e organico. Sfondo brunito, accento ambra. Più umano, meno freddo.</div>
+  </div>
+
+  <div class="block">
+    <div class="stitle">03 — Bold Violet</div>
+    <div class="phone"><div class="t3">
+      <div class="hdr">
+        <div class="pill"><div class="d"></div> System Online</div>
+        <h1>Life OS</h1>
+      </div>
+      <div class="card">
+        <div class="lbl">Total Assets</div><div class="amt">€ <span>3.240</span></div>
+        <div class="row">
+          <div class="si"><div class="sl">BANK</div><div class="sv">2.800</div></div>
+          <div class="si"><div class="sl">TINABA</div><div class="sv">200</div></div>
+          <div class="si"><div class="sl">CASH</div><div class="sv">240</div></div>
+        </div>
+      </div>
+      <div class="grid">
+        <div class="gi"><div class="ic">🧠</div><div class="gl">Brain Dump</div><div class="gv">12</div></div>
+        <div class="gi"><div class="ic">💳</div><div class="gl">Credits</div><div class="gv">-340€</div></div>
+        <div class="gi"><div class="ic">💪</div><div class="gl">Body</div><div class="gv">94.5kg</div></div>
+        <div class="gi"><div class="ic">🎬</div><div class="gl">Reviews</div><div class="gv">8</div></div>
+      </div>
+      <div class="bnav">
+        <div class="ni"><div class="d on"></div><span class="on">HOME</span></div>
+        <div class="ni"><div class="d"></div><span>BRAIN</span></div>
+        <div class="ni"><div class="d"></div><span>CREDITS</span></div>
+        <div class="ni"><div class="d"></div><span>BODY</span></div>
+        <div class="ni"><div class="d"></div><span>REVIEW</span></div>
+      </div>
+    </div></div>
+    <div class="tags"><div class="tag">Space Grotesk</div><div class="tag">#08080f</div><div class="tag">Violet #a78bfa</div></div>
+    <div class="desc">Audace, gradients viola/indaco, bagliori soft. Carattere forte senza essere cyberpunk.</div>
+  </div>
+
+  <div style="height:40px"></div>
 </div>
 </body>
 </html>
