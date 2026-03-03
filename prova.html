@@ -3,203 +3,311 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Style Preview</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=DM+Sans:wght@400;500;600&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<title>Style Preview — Mono Frosted</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
 * { margin: 0; padding: 0; box-sizing: border-box; }
-body { background: #111; font-family: 'Inter', sans-serif; color: #fff; }
-.page { display: flex; flex-direction: column; align-items: center; padding: 40px 20px; gap: 60px; }
-.stitle { font-size: 11px; letter-spacing: 3px; text-transform: uppercase; color: #555; margin-bottom: 24px; text-align: center; }
-.phone { width: 320px; height: 620px; border-radius: 44px; overflow: hidden; position: relative; box-shadow: 0 40px 80px rgba(0,0,0,0.7); }
-.block { display: flex; flex-direction: column; align-items: center; }
-.tags { display: flex; gap: 8px; margin: 20px 0 10px; flex-wrap: wrap; justify-content: center; }
-.tag { padding: 5px 14px; border-radius: 20px; font-size: 11px; border: 1.5px solid #333; color: #555; }
-.desc { font-size: 12px; color: #444; max-width: 300px; text-align: center; line-height: 1.6; }
-/* T1 */
-.t1{background:#0f0f0f;height:100%;overflow:hidden;font-family:'Inter',sans-serif;}
-.t1 .hdr{padding:28px 20px 16px;}
-.t1 .hdr small{font-size:10px;color:#555;letter-spacing:1px;display:block;margin-bottom:4px;}
-.t1 .hdr h1{font-size:26px;font-weight:600;}
-.t1 .hdr .on{font-size:11px;color:#3b82f6;margin-top:3px;}
-.t1 .card{margin:0 16px;background:#1a1a1a;border-radius:20px;padding:20px;border:1px solid #242424;}
-.t1 .card .lbl{font-size:10px;color:#555;margin-bottom:6px;}
-.t1 .card .amt{font-size:32px;font-weight:700;letter-spacing:-1px;}
-.t1 .card .row{display:flex;gap:8px;margin-top:14px;}
-.t1 .card .si{flex:1;background:#222;border-radius:10px;padding:10px;}
-.t1 .card .si .sl{font-size:8px;color:#555;margin-bottom:3px;}
-.t1 .card .si .sv{font-size:12px;font-weight:600;color:#3b82f6;}
-.t1 .grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:12px 16px;}
-.t1 .gi{background:#1a1a1a;border-radius:16px;padding:16px;border:1px solid #242424;}
-.t1 .gi .ic{font-size:20px;margin-bottom:8px;}
-.t1 .gi .gl{font-size:10px;color:#555;margin-bottom:3px;}
-.t1 .gi .gv{font-size:15px;font-weight:600;}
-.t1 .bnav{position:absolute;bottom:0;left:0;right:0;background:#0f0f0f;border-top:1px solid #1a1a1a;display:flex;padding:12px 0 22px;}
-.t1 .bnav .ni{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;}
-.t1 .bnav .ni .d{width:20px;height:20px;border-radius:6px;background:#1a1a1a;}
-.t1 .bnav .ni .d.on{background:#3b82f6;}
-.t1 .bnav .ni span{font-size:7px;color:#444;}
-.t1 .bnav .ni span.on{color:#3b82f6;}
-/* T2 */
-.t2{background:#111008;height:100%;overflow:hidden;font-family:'DM Sans',sans-serif;}
-.t2 .hdr{padding:28px 20px 16px;display:flex;justify-content:space-between;align-items:flex-start;}
-.t2 .hdr small{font-size:10px;color:#6b6550;display:block;margin-bottom:4px;}
-.t2 .hdr h1{font-size:24px;font-weight:600;}
-.t2 .hdr .badge{background:rgba(245,166,35,0.12);color:#f5a623;font-size:10px;padding:5px 11px;border-radius:20px;white-space:nowrap;margin-top:4px;}
-.t2 .card{margin:0 16px;background:linear-gradient(135deg,#1e1c14,#1a1810);border-radius:22px;padding:20px;border:1px solid #2a2720;}
-.t2 .card .lbl{font-size:10px;color:#6b6550;margin-bottom:6px;}
-.t2 .card .amt{font-size:34px;font-weight:700;letter-spacing:-1px;}
-.t2 .card .line{width:40px;height:3px;background:#f5a623;border-radius:2px;margin-top:12px;}
-.t2 .card .row{display:flex;gap:8px;margin-top:14px;}
-.t2 .card .si{flex:1;background:rgba(255,255,255,0.04);border-radius:10px;padding:10px;}
-.t2 .card .si .sl{font-size:8px;color:#6b6550;margin-bottom:3px;}
-.t2 .card .si .sv{font-size:12px;font-weight:600;color:#f5a623;}
-.t2 .slbl{margin:14px 16px 8px;font-size:10px;color:#6b6550;letter-spacing:1px;text-transform:uppercase;}
-.t2 .txl{margin:0 16px;display:flex;flex-direction:column;gap:8px;}
-.t2 .txi{background:#1a1810;border-radius:12px;padding:12px 14px;display:flex;justify-content:space-between;align-items:center;border:1px solid #2a2720;}
-.t2 .txi .tn{font-size:13px;font-weight:500;}
-.t2 .txi .tc{font-size:10px;color:#6b6550;margin-top:2px;}
-.t2 .txi .ta{font-size:14px;font-weight:600;}
-.t2 .txi .ta.n{color:#ff6b6b;}
-.t2 .txi .ta.p{color:#f5a623;}
-.t2 .bnav{position:absolute;bottom:0;left:0;right:0;background:#111008;border-top:1px solid #1e1c14;display:flex;padding:12px 0 22px;}
-.t2 .bnav .ni{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;}
-.t2 .bnav .ni .d{width:20px;height:20px;border-radius:6px;background:#1a1810;}
-.t2 .bnav .ni .d.on{background:#f5a623;}
-.t2 .bnav .ni span{font-size:7px;color:#444;}
-.t2 .bnav .ni span.on{color:#f5a623;}
-/* T3 */
-.t3{background:#08080f;height:100%;overflow:hidden;font-family:'Space Grotesk',sans-serif;}
-.t3 .hdr{padding:28px 20px 14px;}
-.t3 .hdr .pill{display:inline-flex;align-items:center;gap:6px;background:rgba(139,92,246,0.12);border:1px solid rgba(139,92,246,0.25);color:#a78bfa;font-size:10px;padding:4px 10px;border-radius:20px;margin-bottom:10px;}
-.t3 .hdr .pill .d{width:5px;height:5px;border-radius:50%;background:#a78bfa;}
-.t3 .hdr h1{font-size:28px;font-weight:700;background:linear-gradient(135deg,#fff 0%,#a78bfa 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
-.t3 .card{margin:0 16px;background:linear-gradient(135deg,#1a0f2e,#0f0a1e);border-radius:24px;padding:20px;border:1px solid rgba(139,92,246,0.2);position:relative;overflow:hidden;}
-.t3 .card::before{content:'';position:absolute;top:-40px;right:-40px;width:120px;height:120px;background:radial-gradient(circle,rgba(139,92,246,0.25),transparent 70%);pointer-events:none;}
-.t3 .card .lbl{font-size:10px;color:#6b5b8a;margin-bottom:6px;letter-spacing:1px;text-transform:uppercase;}
-.t3 .card .amt{font-size:34px;font-weight:700;letter-spacing:-2px;}
-.t3 .card .amt span{color:#a78bfa;font-size:20px;}
-.t3 .card .row{display:flex;gap:8px;margin-top:14px;}
-.t3 .card .si{flex:1;background:rgba(139,92,246,0.08);border-radius:12px;padding:9px;border:1px solid rgba(139,92,246,0.15);}
-.t3 .card .si .sl{font-size:8px;color:#6b5b8a;margin-bottom:2px;text-transform:uppercase;}
-.t3 .card .si .sv{font-size:11px;font-weight:700;color:#a78bfa;}
-.t3 .grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:12px 16px;}
-.t3 .gi{background:#0f0d1a;border-radius:18px;padding:16px;border:1px solid #1f1a35;}
-.t3 .gi .ic{font-size:18px;margin-bottom:8px;}
-.t3 .gi .gl{font-size:9px;color:#6b5b8a;letter-spacing:1px;text-transform:uppercase;margin-bottom:3px;}
-.t3 .gi .gv{font-size:16px;font-weight:700;}
-.t3 .bnav{position:absolute;bottom:0;left:0;right:0;background:rgba(8,8,15,0.97);border-top:1px solid #1f1a35;display:flex;padding:12px 0 22px;}
-.t3 .bnav .ni{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;}
-.t3 .bnav .ni .d{width:20px;height:20px;border-radius:8px;background:#0f0d1a;}
-.t3 .bnav .ni .d.on{background:linear-gradient(135deg,#7c3aed,#a78bfa);}
-.t3 .bnav .ni span{font-size:7px;color:#444;}
-.t3 .bnav .ni span.on{color:#a78bfa;}
+
+body {
+  background: radial-gradient(ellipse at 20% 50%, #1a1a2e 0%, #0a0a0a 60%);
+  min-height: 100vh;
+  font-family: 'Space Grotesk', sans-serif;
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 40px 20px 80px;
+  gap: 16px;
+}
+
+.intro { text-align: center; margin-bottom: 32px; }
+.intro h1 { font-size: 20px; font-weight: 600; margin-bottom: 6px; }
+.intro p { font-size: 12px; color: #555; }
+
+.phone {
+  width: 340px;
+  height: 680px;
+  border-radius: 48px;
+  overflow: hidden;
+  position: relative;
+  box-shadow:
+    0 0 0 1px rgba(255,255,255,0.06),
+    0 40px 80px rgba(0,0,0,0.8),
+    0 0 60px rgba(59,130,246,0.05);
+  background: #0a0a0a;
+}
+
+/* sfondo interno con gradiente subtile */
+.inner {
+  height: 100%;
+  overflow: hidden;
+  background:
+    radial-gradient(ellipse at 70% 10%, rgba(59,130,246,0.06) 0%, transparent 50%),
+    #0f0f0f;
+  position: relative;
+}
+
+/* === HEADER === */
+.hdr {
+  padding: 32px 22px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+.hdr-left small {
+  font-size: 10px;
+  color: #444;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  display: block;
+  margin-bottom: 6px;
+}
+.hdr-left h1 {
+  font-size: 28px;
+  font-weight: 700;
+  color: #fff;
+  letter-spacing: -0.5px;
+}
+.status-pill {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 10px;
+  color: #555;
+  margin-top: 4px;
+}
+.status-pill .dot {
+  width: 5px; height: 5px;
+  border-radius: 50%;
+  background: #3b82f6;
+  box-shadow: 0 0 6px #3b82f6;
+}
+
+/* === FROSTED CARD === */
+.glass-card {
+  margin: 0 16px;
+  background: rgba(255,255,255,0.04);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 24px;
+  padding: 22px;
+  position: relative;
+  overflow: hidden;
+}
+/* sottile riflesso in alto */
+.glass-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.12), transparent);
+}
+
+.card-label {
+  font-size: 10px;
+  color: #444;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+.card-amount {
+  font-size: 36px;
+  font-weight: 700;
+  color: #fff;
+  letter-spacing: -2px;
+  line-height: 1;
+}
+.card-amount .currency {
+  font-size: 20px;
+  color: #555;
+  font-weight: 400;
+  letter-spacing: 0;
+}
+
+.wallets {
+  display: flex;
+  gap: 8px;
+  margin-top: 18px;
+}
+.wallet-item {
+  flex: 1;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 12px;
+  padding: 10px 8px;
+}
+.wallet-item .wl { font-size: 8px; color: #444; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 4px; }
+.wallet-item .wv { font-size: 12px; font-weight: 600; color: #ccc; }
+
+/* === GRID MODULI === */
+.modules-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin: 14px 16px 0;
+}
+.module-card {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 20px;
+  padding: 18px 16px;
+  position: relative;
+  overflow: hidden;
+  transition: border-color 0.2s;
+}
+.module-card::after {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.08), transparent);
+}
+.module-card .m-icon { font-size: 22px; margin-bottom: 10px; }
+.module-card .m-label { font-size: 10px; color: #444; letter-spacing: 0.5px; margin-bottom: 4px; text-transform: uppercase; }
+.module-card .m-val { font-size: 16px; font-weight: 600; color: #e0e0e0; }
+/* accent sottile solo sul border top del modulo attivo */
+.module-card.accent { border-color: rgba(59,130,246,0.25); }
+.module-card.accent .m-val { color: #fff; }
+
+/* === BOTTOM NAV === */
+.bnav {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  background: rgba(10,10,10,0.85);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-top: 1px solid rgba(255,255,255,0.06);
+  display: flex;
+  padding: 14px 0 26px;
+}
+.bnav .ni {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+}
+.bnav .ni .icon-wrap {
+  width: 36px; height: 36px;
+  border-radius: 12px;
+  background: transparent;
+  display: flex; align-items: center; justify-content: center;
+}
+.bnav .ni .icon-wrap.on {
+  background: rgba(59,130,246,0.12);
+  border: 1px solid rgba(59,130,246,0.2);
+}
+.bnav .ni .icon-dot {
+  width: 18px; height: 3px;
+  border-radius: 2px;
+  background: #222;
+}
+.bnav .ni .icon-dot.on { background: #3b82f6; }
+.bnav .ni span { font-size: 7px; color: #333; letter-spacing: 0.5px; }
+.bnav .ni span.on { color: #3b82f6; }
+
+/* annotazione */
+.caption {
+  font-size: 12px;
+  color: #444;
+  text-align: center;
+  max-width: 300px;
+  line-height: 1.7;
+  margin-top: 24px;
+}
+.caption strong { color: #888; font-weight: 500; }
 </style>
 </head>
 <body>
-<div class="page">
-  <div style="text-align:center;padding-top:10px;">
-    <div style="font-size:22px;font-weight:700;margin-bottom:8px;">Style Preview</div>
-    <div style="font-size:13px;color:#444;">3 direzioni — stessa struttura, look completamente diverso</div>
-  </div>
 
-  <div class="block">
-    <div class="stitle">01 — Dark Minimal</div>
-    <div class="phone"><div class="t1">
-      <div class="hdr"><small>LUN, 2 MARZO 2026</small><h1>Life OS</h1><div class="on">● Sync active</div></div>
-      <div class="card">
-        <div class="lbl">TOTAL ASSETS</div><div class="amt">€ 3.240</div>
-        <div class="row">
-          <div class="si"><div class="sl">BANK</div><div class="sv">2.800</div></div>
-          <div class="si"><div class="sl">TINABA</div><div class="sv">200</div></div>
-          <div class="si"><div class="sl">CASH</div><div class="sv">240</div></div>
-        </div>
-      </div>
-      <div style="height:12px"></div>
-      <div class="grid">
-        <div class="gi"><div class="ic">🧠</div><div class="gl">Brain Dump</div><div class="gv">12 note</div></div>
-        <div class="gi"><div class="ic">💳</div><div class="gl">Credits</div><div class="gv">-€ 340</div></div>
-        <div class="gi"><div class="ic">💪</div><div class="gl">Body</div><div class="gv">94.5 kg</div></div>
-        <div class="gi"><div class="ic">🎬</div><div class="gl">Reviews</div><div class="gv">8 log</div></div>
-      </div>
-      <div class="bnav">
-        <div class="ni"><div class="d on"></div><span class="on">HOME</span></div>
-        <div class="ni"><div class="d"></div><span>BRAIN</span></div>
-        <div class="ni"><div class="d"></div><span>CREDITS</span></div>
-        <div class="ni"><div class="d"></div><span>BODY</span></div>
-        <div class="ni"><div class="d"></div><span>REVIEW</span></div>
-      </div>
-    </div></div>
-    <div class="tags"><div class="tag">Inter</div><div class="tag">#0f0f0f</div><div class="tag">Blue #3b82f6</div></div>
-    <div class="desc">Pulito, iOS-like. Card arrotondate, niente decorazioni. Sembra un'app nativa.</div>
-  </div>
+<div class="intro">
+  <h1>Mono Frosted</h1>
+  <p>Space Grotesk · Monocromatico · Frosted glass leggibile</p>
+</div>
 
-  <div class="block">
-    <div class="stitle">02 — Dark Warm</div>
-    <div class="phone"><div class="t2">
-      <div class="hdr">
-        <div><small>Lun, 2 Marzo 2026</small><h1>Life OS</h1></div>
-        <div class="badge">● Online</div>
-      </div>
-      <div class="card">
-        <div class="lbl">Total Assets</div><div class="amt">€ 3.240</div><div class="line"></div>
-        <div class="row">
-          <div class="si"><div class="sl">BANK</div><div class="sv">2.800</div></div>
-          <div class="si"><div class="sl">TINABA</div><div class="sv">200</div></div>
-          <div class="si"><div class="sl">CASH</div><div class="sv">240</div></div>
-        </div>
-      </div>
-      <div class="slbl">Ultimi movimenti</div>
-      <div class="txl">
-        <div class="txi"><div><div class="tn">Pizza</div><div class="tc">CIBO</div></div><div class="ta n">-€ 14</div></div>
-        <div class="txi"><div><div class="tn">Stipendio</div><div class="tc">ENTRATE</div></div><div class="ta p">+€ 1.500</div></div>
-        <div class="txi"><div><div class="tn">Netflix</div><div class="tc">SVAGO</div></div><div class="ta n">-€ 18</div></div>
-      </div>
-      <div class="bnav">
-        <div class="ni"><div class="d on"></div><span class="on">HOME</span></div>
-        <div class="ni"><div class="d"></div><span>BRAIN</span></div>
-        <div class="ni"><div class="d"></div><span>CREDITS</span></div>
-        <div class="ni"><div class="d"></div><span>BODY</span></div>
-        <div class="ni"><div class="d"></div><span>REVIEW</span></div>
-      </div>
-    </div></div>
-    <div class="tags"><div class="tag">DM Sans</div><div class="tag">#111008</div><div class="tag">Amber #f5a623</div></div>
-    <div class="desc">Caldo e organico. Sfondo brunito, accento ambra. Più umano, meno freddo.</div>
-  </div>
+<div class="phone">
+  <div class="inner">
 
-  <div class="block">
-    <div class="stitle">03 — Bold Violet</div>
-    <div class="phone"><div class="t3">
-      <div class="hdr">
-        <div class="pill"><div class="d"></div> System Online</div>
+    <div class="hdr">
+      <div class="hdr-left">
+        <small>Lun, 2 Marzo 2026</small>
         <h1>Life OS</h1>
       </div>
-      <div class="card">
-        <div class="lbl">Total Assets</div><div class="amt">€ <span>3.240</span></div>
-        <div class="row">
-          <div class="si"><div class="sl">BANK</div><div class="sv">2.800</div></div>
-          <div class="si"><div class="sl">TINABA</div><div class="sv">200</div></div>
-          <div class="si"><div class="sl">CASH</div><div class="sv">240</div></div>
-        </div>
+      <div class="status-pill">
+        <div class="dot"></div>
+        Online
       </div>
-      <div class="grid">
-        <div class="gi"><div class="ic">🧠</div><div class="gl">Brain Dump</div><div class="gv">12</div></div>
-        <div class="gi"><div class="ic">💳</div><div class="gl">Credits</div><div class="gv">-340€</div></div>
-        <div class="gi"><div class="ic">💪</div><div class="gl">Body</div><div class="gv">94.5kg</div></div>
-        <div class="gi"><div class="ic">🎬</div><div class="gl">Reviews</div><div class="gv">8</div></div>
-      </div>
-      <div class="bnav">
-        <div class="ni"><div class="d on"></div><span class="on">HOME</span></div>
-        <div class="ni"><div class="d"></div><span>BRAIN</span></div>
-        <div class="ni"><div class="d"></div><span>CREDITS</span></div>
-        <div class="ni"><div class="d"></div><span>BODY</span></div>
-        <div class="ni"><div class="d"></div><span>REVIEW</span></div>
-      </div>
-    </div></div>
-    <div class="tags"><div class="tag">Space Grotesk</div><div class="tag">#08080f</div><div class="tag">Violet #a78bfa</div></div>
-    <div class="desc">Audace, gradients viola/indaco, bagliori soft. Carattere forte senza essere cyberpunk.</div>
-  </div>
+    </div>
 
-  <div style="height:40px"></div>
+    <div class="glass-card">
+      <div class="card-label">Total Assets</div>
+      <div class="card-amount"><span class="currency">€ </span>3.240</div>
+      <div class="wallets">
+        <div class="wallet-item"><div class="wl">Bank</div><div class="wv">2.800</div></div>
+        <div class="wallet-item"><div class="wl">Tinaba</div><div class="wv">200</div></div>
+        <div class="wallet-item"><div class="wl">Cash</div><div class="wv">240</div></div>
+      </div>
+    </div>
+
+    <div class="modules-grid">
+      <div class="module-card accent">
+        <div class="m-icon">🧠</div>
+        <div class="m-label">Brain Dump</div>
+        <div class="m-val">12 note</div>
+      </div>
+      <div class="module-card">
+        <div class="m-icon">💳</div>
+        <div class="m-label">Credits</div>
+        <div class="m-val">-€ 340</div>
+      </div>
+      <div class="module-card">
+        <div class="m-icon">💪</div>
+        <div class="m-label">Body</div>
+        <div class="m-val">94.5 kg</div>
+      </div>
+      <div class="module-card">
+        <div class="m-icon">🎬</div>
+        <div class="m-label">Reviews</div>
+        <div class="m-val">8 log</div>
+      </div>
+    </div>
+
+    <div class="bnav">
+      <div class="ni">
+        <div class="icon-wrap on"><div class="icon-dot on"></div></div>
+        <span class="on">HOME</span>
+      </div>
+      <div class="ni">
+        <div class="icon-wrap"><div class="icon-dot"></div></div>
+        <span>BRAIN</span>
+      </div>
+      <div class="ni">
+        <div class="icon-wrap"><div class="icon-dot"></div></div>
+        <span>CREDITS</span>
+      </div>
+      <div class="ni">
+        <div class="icon-wrap"><div class="icon-dot"></div></div>
+        <span>BODY</span>
+      </div>
+      <div class="ni">
+        <div class="icon-wrap"><div class="icon-dot"></div></div>
+        <span>REVIEW</span>
+      </div>
+    </div>
+
+  </div>
 </div>
+
+<div class="caption">
+  <strong>Palette:</strong> #0f0f0f · #1a1a1a · #262626 · #fff<br>
+  <strong>Accento:</strong> blu #3b82f6 solo su elementi interattivi<br>
+  <strong>Glass:</strong> backdrop-blur leggibile, non opaco
+</div>
+
 </body>
 </html>
