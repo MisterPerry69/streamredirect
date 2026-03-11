@@ -2,312 +2,1352 @@
 <html lang="it">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Style Preview — Mono Frosted</title>
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>Logi Sicurex — Ispezione</title>
+<link rel="manifest" href="manifest.json">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <style>
-* { margin: 0; padding: 0; box-sizing: border-box; }
+  @import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@300;400;500;600&display=swap');
 
-body {
-  background: radial-gradient(ellipse at 20% 50%, #1a1a2e 0%, #0a0a0a 60%);
-  min-height: 100vh;
-  font-family: 'Space Grotesk', sans-serif;
-  color: #fff;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 40px 20px 80px;
-  gap: 16px;
-}
+  :root {
+    --bg: #f4f2ed;
+    --surface: #ffffff;
+    --primary: #1a2e1a;
+    --accent: #4a7c4a;
+    --accent2: #e8f0e8;
+    --warn: #c0392b;
+    --warn-light: #fdecea;
+    --text: #1a1a1a;
+    --muted: #6b7280;
+    --border: #d1cfc8;
+    --radius: 12px;
+    --shadow: 0 2px 12px rgba(0,0,0,0.08);
+  }
 
-.intro { text-align: center; margin-bottom: 32px; }
-.intro h1 { font-size: 20px; font-weight: 600; margin-bottom: 6px; }
-.intro p { font-size: 12px; color: #555; }
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
 
-.phone {
-  width: 340px;
-  height: 680px;
-  border-radius: 48px;
-  overflow: hidden;
-  position: relative;
-  box-shadow:
-    0 0 0 1px rgba(255,255,255,0.06),
-    0 40px 80px rgba(0,0,0,0.8),
-    0 0 60px rgba(59,130,246,0.05);
-  background: #0a0a0a;
-}
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    font-size: 15px;
+  }
 
-/* sfondo interno con gradiente subtile */
-.inner {
-  height: 100%;
-  overflow: hidden;
-  background:
-    radial-gradient(ellipse at 70% 10%, rgba(59,130,246,0.06) 0%, transparent 50%),
-    #0f0f0f;
-  position: relative;
-}
+  /* ─── HEADER ─── */
+  .app-header {
+    background: var(--primary);
+    color: white;
+    padding: 16px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 16px rgba(0,0,0,0.2);
+  }
+  .app-header .logo {
+    font-family: 'DM Serif Display', serif;
+    font-size: 18px;
+    letter-spacing: 0.3px;
+  }
+  .app-header .logo span { color: #7bc47b; }
+  .step-indicator {
+    font-size: 12px;
+    color: rgba(255,255,255,0.6);
+    font-weight: 500;
+  }
 
-/* === HEADER === */
-.hdr {
-  padding: 32px 22px 20px;
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-}
-.hdr-left small {
-  font-size: 10px;
-  color: #444;
-  letter-spacing: 1.5px;
-  text-transform: uppercase;
-  display: block;
-  margin-bottom: 6px;
-}
-.hdr-left h1 {
-  font-size: 28px;
-  font-weight: 700;
-  color: #fff;
-  letter-spacing: -0.5px;
-}
-.status-pill {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  background: rgba(255,255,255,0.04);
-  border: 1px solid rgba(255,255,255,0.08);
-  padding: 6px 12px;
-  border-radius: 20px;
-  font-size: 10px;
-  color: #555;
-  margin-top: 4px;
-}
-.status-pill .dot {
-  width: 5px; height: 5px;
-  border-radius: 50%;
-  background: #3b82f6;
-  box-shadow: 0 0 6px #3b82f6;
-}
+  /* ─── PROGRESS ─── */
+  .progress-bar {
+    height: 3px;
+    background: var(--border);
+    position: sticky;
+    top: 57px;
+    z-index: 99;
+  }
+  .progress-fill {
+    height: 100%;
+    background: var(--accent);
+    transition: width 0.4s ease;
+  }
 
-/* === FROSTED CARD === */
-.glass-card {
-  margin: 0 16px;
-  background: rgba(255,255,255,0.04);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(255,255,255,0.08);
-  border-radius: 24px;
-  padding: 22px;
-  position: relative;
-  overflow: hidden;
-}
-/* sottile riflesso in alto */
-.glass-card::before {
-  content: '';
-  position: absolute;
-  top: 0; left: 0; right: 0;
-  height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.12), transparent);
-}
+  /* ─── SCREENS ─── */
+  .screen { display: none; padding: 20px; max-width: 700px; margin: 0 auto; }
+  .screen.active { display: block; }
 
-.card-label {
-  font-size: 10px;
-  color: #444;
-  letter-spacing: 1.5px;
-  text-transform: uppercase;
-  margin-bottom: 8px;
-}
-.card-amount {
-  font-size: 36px;
-  font-weight: 700;
-  color: #fff;
-  letter-spacing: -2px;
-  line-height: 1;
-}
-.card-amount .currency {
-  font-size: 20px;
-  color: #555;
-  font-weight: 400;
-  letter-spacing: 0;
-}
+  /* ─── CARDS ─── */
+  .card {
+    background: var(--surface);
+    border-radius: var(--radius);
+    padding: 20px;
+    margin-bottom: 16px;
+    box-shadow: var(--shadow);
+    border: 1px solid var(--border);
+  }
+  .card-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: 16px;
+    color: var(--primary);
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .card-title .icon {
+    width: 28px; height: 28px;
+    background: var(--accent2);
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px;
+  }
 
-.wallets {
-  display: flex;
-  gap: 8px;
-  margin-top: 18px;
-}
-.wallet-item {
-  flex: 1;
-  background: rgba(255,255,255,0.03);
-  border: 1px solid rgba(255,255,255,0.06);
-  border-radius: 12px;
-  padding: 10px 8px;
-}
-.wallet-item .wl { font-size: 8px; color: #444; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 4px; }
-.wallet-item .wv { font-size: 12px; font-weight: 600; color: #ccc; }
+  /* ─── FORMS ─── */
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; }
+  .form-row.single { grid-template-columns: 1fr; }
+  .form-row.triple { grid-template-columns: 1fr 1fr 1fr; }
 
-/* === GRID MODULI === */
-.modules-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 10px;
-  margin: 14px 16px 0;
-}
-.module-card {
-  background: rgba(255,255,255,0.03);
-  border: 1px solid rgba(255,255,255,0.06);
-  border-radius: 20px;
-  padding: 18px 16px;
-  position: relative;
-  overflow: hidden;
-  transition: border-color 0.2s;
-}
-.module-card::after {
-  content: '';
-  position: absolute;
-  top: 0; left: 0; right: 0;
-  height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.08), transparent);
-}
-.module-card .m-icon { font-size: 22px; margin-bottom: 10px; }
-.module-card .m-label { font-size: 10px; color: #444; letter-spacing: 0.5px; margin-bottom: 4px; text-transform: uppercase; }
-.module-card .m-val { font-size: 16px; font-weight: 600; color: #e0e0e0; }
-/* accent sottile solo sul border top del modulo attivo */
-.module-card.accent { border-color: rgba(59,130,246,0.25); }
-.module-card.accent .m-val { color: #fff; }
+  .field { display: flex; flex-direction: column; gap: 5px; }
+  .field label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.6px; color: var(--muted); }
+  .field input, .field select, .field textarea {
+    border: 1.5px solid var(--border);
+    border-radius: 8px;
+    padding: 10px 12px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    color: var(--text);
+    background: #fafaf8;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    width: 100%;
+  }
+  .field input:focus, .field select:focus, .field textarea:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(74,124,74,0.12);
+    background: white;
+  }
+  .field textarea { resize: vertical; min-height: 70px; }
 
-/* === BOTTOM NAV === */
-.bnav {
-  position: absolute;
-  bottom: 0; left: 0; right: 0;
-  background: rgba(10,10,10,0.85);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border-top: 1px solid rgba(255,255,255,0.06);
-  display: flex;
-  padding: 14px 0 26px;
-}
-.bnav .ni {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 5px;
-}
-.bnav .ni .icon-wrap {
-  width: 36px; height: 36px;
-  border-radius: 12px;
-  background: transparent;
-  display: flex; align-items: center; justify-content: center;
-}
-.bnav .ni .icon-wrap.on {
-  background: rgba(59,130,246,0.12);
-  border: 1px solid rgba(59,130,246,0.2);
-}
-.bnav .ni .icon-dot {
-  width: 18px; height: 3px;
-  border-radius: 2px;
-  background: #222;
-}
-.bnav .ni .icon-dot.on { background: #3b82f6; }
-.bnav .ni span { font-size: 7px; color: #333; letter-spacing: 0.5px; }
-.bnav .ni span.on { color: #3b82f6; }
+  /* ─── STATUS ROW ─── */
+  .status-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 11px 14px;
+    border-radius: 8px;
+    border: 1.5px solid var(--border);
+    margin-bottom: 8px;
+    background: #fafaf8;
+    cursor: pointer;
+    transition: all 0.15s;
+    gap: 12px;
+  }
+  .status-row:hover { border-color: var(--accent); background: var(--accent2); }
+  .status-row .label { font-size: 13px; font-weight: 500; flex: 1; }
+  .status-row .sublabel { font-size: 11px; color: var(--muted); flex: 1; }
+  .toggle-group { display: flex; gap: 6px; }
+  .toggle-btn {
+    padding: 5px 10px;
+    border-radius: 6px;
+    border: 1.5px solid var(--border);
+    background: white;
+    font-size: 11px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s;
+    white-space: nowrap;
+  }
+  .toggle-btn.active-ok { background: #e8f5e9; border-color: #4caf50; color: #2e7d32; }
+  .toggle-btn.active-warn { background: #fff8e1; border-color: #ffc107; color: #e65100; }
+  .toggle-btn.active-no { background: var(--warn-light); border-color: var(--warn); color: var(--warn); }
+  .toggle-btn.active-np { background: #f3f4f6; border-color: #9ca3af; color: #6b7280; }
 
-/* annotazione */
-.caption {
-  font-size: 12px;
-  color: #444;
-  text-align: center;
-  max-width: 300px;
-  line-height: 1.7;
-  margin-top: 24px;
-}
-.caption strong { color: #888; font-weight: 500; }
+  /* ─── CHECK ITEM ─── */
+  .check-section { margin-bottom: 20px; }
+  .check-section-title {
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: var(--muted);
+    margin-bottom: 10px;
+    padding-bottom: 6px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  /* ─── RISK BADGE ─── */
+  .risk-badge {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .risk-badge.presente { background: #fdecea; color: var(--warn); }
+  .risk-badge.parziale { background: #fff8e1; color: #e65100; }
+  .risk-badge.assente { background: #e8f5e9; color: #2e7d32; }
+
+  /* ─── TRAINING TABLE ─── */
+  .training-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+  .training-table th {
+    background: var(--accent2);
+    color: var(--primary);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    padding: 8px 10px;
+    text-align: left;
+    font-size: 10px;
+  }
+  .training-table td { padding: 9px 10px; border-bottom: 1px solid var(--border); vertical-align: middle; }
+  .training-table tr:last-child td { border-bottom: none; }
+  .training-table input { 
+    border: 1.5px solid var(--border); border-radius: 6px; padding: 5px 7px;
+    font-family: 'DM Sans', sans-serif; font-size: 12px; width: 100%; background: #fafaf8;
+  }
+  .training-table input:focus { outline: none; border-color: var(--accent); background: white; }
+
+  /* ─── NOTES AREA ─── */
+  .note-area {
+    background: #fffbf0;
+    border: 1.5px solid #fcd34d;
+    border-radius: 8px;
+    padding: 12px 14px;
+    margin-top: 8px;
+    display: none;
+  }
+  .note-area.visible { display: block; }
+  .note-area textarea {
+    border: none; background: transparent; width: 100%;
+    font-family: 'DM Sans', sans-serif; font-size: 13px;
+    resize: none; color: var(--text);
+  }
+  .note-area textarea:focus { outline: none; }
+  .note-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.6px; color: #92400e; margin-bottom: 6px; }
+
+  /* ─── BOTTOM NAV ─── */
+  .bottom-nav {
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    background: var(--surface);
+    padding: 12px 20px;
+    display: flex;
+    gap: 10px;
+    box-shadow: 0 -2px 20px rgba(0,0,0,0.1);
+    z-index: 100;
+    max-width: 700px;
+    margin: 0 auto;
+  }
+  .btn {
+    flex: 1;
+    padding: 13px;
+    border-radius: 10px;
+    border: none;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+  }
+  .btn-primary { background: var(--primary); color: white; }
+  .btn-primary:hover { background: #2d4f2d; transform: translateY(-1px); }
+  .btn-secondary { background: var(--accent2); color: var(--primary); }
+  .btn-secondary:hover { background: #d4e8d4; }
+  .btn-accent { background: var(--accent); color: white; }
+  .btn-accent:hover { background: #3d6b3d; }
+  .btn-danger { background: var(--warn); color: white; flex: 0.5; }
+
+  /* ─── SPACER FOR FIXED NAV ─── */
+  .nav-spacer { height: 80px; }
+
+  /* ─── WELCOME SCREEN ─── */
+  .welcome-hero {
+    text-align: center;
+    padding: 40px 20px 30px;
+  }
+  .welcome-hero .brand {
+    font-family: 'DM Serif Display', serif;
+    font-size: 32px;
+    color: var(--primary);
+    line-height: 1.1;
+  }
+  .welcome-hero .brand span { color: var(--accent); }
+  .welcome-hero .sub {
+    color: var(--muted);
+    font-size: 14px;
+    margin-top: 8px;
+  }
+  .client-list { display: flex; flex-direction: column; gap: 10px; }
+  .client-item {
+    background: white;
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    padding: 14px 16px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    transition: all 0.15s;
+  }
+  .client-item:hover { border-color: var(--accent); transform: translateX(2px); }
+  .client-item .client-name { font-weight: 600; font-size: 14px; }
+  .client-item .client-meta { font-size: 12px; color: var(--muted); margin-top: 2px; }
+  .client-item .arrow { color: var(--muted); font-size: 18px; }
+  .new-btn {
+    background: var(--primary);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    padding: 15px;
+    width: 100%;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: all 0.2s;
+  }
+  .new-btn:hover { background: #2d4f2d; }
+
+  /* ─── SECTION TABS ─── */
+  .section-tabs {
+    display: flex;
+    gap: 6px;
+    overflow-x: auto;
+    padding: 0 0 8px;
+    margin-bottom: 16px;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  .section-tabs::-webkit-scrollbar { display: none; }
+  .tab-btn {
+    white-space: nowrap;
+    padding: 7px 14px;
+    border-radius: 20px;
+    border: 1.5px solid var(--border);
+    background: white;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    color: var(--muted);
+    transition: all 0.15s;
+  }
+  .tab-btn.active { background: var(--primary); color: white; border-color: var(--primary); }
+  .tab-btn.done { border-color: var(--accent); color: var(--accent); }
+  .tab-btn.done::before { content: "✓ "; }
+
+  /* ─── SUMMARY ─── */
+  .summary-header {
+    background: var(--primary);
+    color: white;
+    border-radius: var(--radius);
+    padding: 20px;
+    margin-bottom: 16px;
+  }
+  .summary-header h2 { font-family: 'DM Serif Display', serif; font-size: 22px; }
+  .summary-header p { color: rgba(255,255,255,0.7); font-size: 13px; margin-top: 4px; }
+  .adempimenti-list { display: flex; flex-direction: column; gap: 8px; }
+  .adempimento-item {
+    background: var(--warn-light);
+    border: 1px solid #f5c6c6;
+    border-left: 4px solid var(--warn);
+    border-radius: 8px;
+    padding: 12px 14px;
+  }
+  .adempimento-item .cat { font-size: 10px; font-weight: 700; text-transform: uppercase; color: var(--warn); letter-spacing: 0.6px; }
+  .adempimento-item .text { font-size: 13px; margin-top: 3px; }
+
+  /* ─── ALERT ─── */
+  .alert {
+    position: fixed;
+    top: 70px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--primary);
+    color: white;
+    padding: 12px 20px;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 500;
+    z-index: 999;
+    opacity: 0;
+    transition: opacity 0.3s;
+    pointer-events: none;
+    white-space: nowrap;
+  }
+  .alert.show { opacity: 1; }
+
+  /* ─── DIVIDER ─── */
+  .divider { height: 1px; background: var(--border); margin: 16px 0; }
+
+  @media (max-width: 480px) {
+    .form-row { grid-template-columns: 1fr; }
+    .form-row.triple { grid-template-columns: 1fr 1fr; }
+  }
 </style>
 </head>
 <body>
 
-<div class="intro">
-  <h1>Mono Frosted</h1>
-  <p>Space Grotesk · Monocromatico · Frosted glass leggibile</p>
+<div class="alert" id="alert"></div>
+
+<!-- HEADER -->
+<div class="app-header">
+  <div class="logo">Logi <span>Sicurex</span></div>
+  <div class="step-indicator" id="stepLabel">Selezione Cliente</div>
+</div>
+<div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+
+<!-- ══════════════════════════════ SCREEN 0: HOME ══════════════════════════════ -->
+<div class="screen active" id="screen-home">
+  <div class="welcome-hero">
+    <div class="brand">Check DVR<br><span>Ispezione</span></div>
+    <div class="sub">Seleziona un cliente o avvia una nuova ispezione</div>
+  </div>
+
+  <button class="new-btn" onclick="newInspection()">＋ Nuova Ispezione</button>
+
+  <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.7px;color:var(--muted);margin-bottom:10px;">Clienti Recenti</div>
+  <div class="client-list" id="clientList"></div>
+  <div class="nav-spacer"></div>
 </div>
 
-<div class="phone">
-  <div class="inner">
+<!-- ══════════════════════════════ SCREEN 1: DATI AZIENDALI ══════════════════════════════ -->
+<div class="screen" id="screen-1">
+  <div class="section-tabs" id="sectionTabs"></div>
 
-    <div class="hdr">
-      <div class="hdr-left">
-        <small>Lun, 2 Marzo 2026</small>
-        <h1>Life OS</h1>
-      </div>
-      <div class="status-pill">
-        <div class="dot"></div>
-        Online
+  <div class="card">
+    <div class="card-title"><div class="icon">🏢</div> Anagrafica Azienda</div>
+    <div class="form-row">
+      <div class="field"><label>Ragione Sociale</label><input type="text" id="ragione_sociale" placeholder="es. Astico Energia S.r.l."></div>
+      <div class="field"><label>P.IVA</label><input type="text" id="piva" placeholder="es. 03192160244"></div>
+    </div>
+    <div class="form-row single">
+      <div class="field"><label>Sede Legale</label><input type="text" id="sede_legale" placeholder="Via, Numero — CAP Città (Prov.)"></div>
+    </div>
+    <div class="form-row single">
+      <div class="field"><label>Sede Operativa 1</label><input type="text" id="sede_op1" placeholder="Indirizzo — nome sito"></div>
+    </div>
+    <div class="form-row single">
+      <div class="field"><label>Sede Operativa 2</label><input type="text" id="sede_op2" placeholder="Indirizzo — nome sito"></div>
+    </div>
+    <div class="form-row single">
+      <div class="field"><label>Sede Uffici (se diversa)</label><input type="text" id="sede_uff" placeholder="Indirizzo uffici"></div>
+    </div>
+    <div class="form-row">
+      <div class="field"><label>Telefono</label><input type="tel" id="telefono"></div>
+      <div class="field"><label>PEC</label><input type="email" id="pec"></div>
+    </div>
+    <div class="form-row">
+      <div class="field"><label>Codice ATECO</label><input type="text" id="ateco" placeholder="es. 35.11"></div>
+      <div class="field"><label>Livello Rischio</label>
+        <select id="livello_rischio">
+          <option value="">— seleziona —</option>
+          <option value="BASSO">Basso</option>
+          <option value="MEDIO">Medio</option>
+          <option value="ALTO">Alto</option>
+        </select>
       </div>
     </div>
+  </div>
 
-    <div class="glass-card">
-      <div class="card-label">Total Assets</div>
-      <div class="card-amount"><span class="currency">€ </span>3.240</div>
-      <div class="wallets">
-        <div class="wallet-item"><div class="wl">Bank</div><div class="wv">2.800</div></div>
-        <div class="wallet-item"><div class="wl">Tinaba</div><div class="wv">200</div></div>
-        <div class="wallet-item"><div class="wl">Cash</div><div class="wv">240</div></div>
-      </div>
+  <div class="card">
+    <div class="card-title"><div class="icon">👥</div> Figure della Sicurezza</div>
+    <div class="form-row">
+      <div class="field"><label>Datore di Lavoro</label><input type="text" id="datore_lavoro"></div>
+      <div class="field"><label>RSPP</label><input type="text" id="rspp"></div>
     </div>
-
-    <div class="modules-grid">
-      <div class="module-card accent">
-        <div class="m-icon">🧠</div>
-        <div class="m-label">Brain Dump</div>
-        <div class="m-val">12 note</div>
-      </div>
-      <div class="module-card">
-        <div class="m-icon">💳</div>
-        <div class="m-label">Credits</div>
-        <div class="m-val">-€ 340</div>
-      </div>
-      <div class="module-card">
-        <div class="m-icon">💪</div>
-        <div class="m-label">Body</div>
-        <div class="m-val">94.5 kg</div>
-      </div>
-      <div class="module-card">
-        <div class="m-icon">🎬</div>
-        <div class="m-label">Reviews</div>
-        <div class="m-val">8 log</div>
-      </div>
+    <div class="form-row">
+      <div class="field"><label>Medico Competente</label><input type="text" id="medico"></div>
+      <div class="field"><label>RLS</label><input type="text" id="rls" placeholder="— se presente —"></div>
     </div>
-
-    <div class="bnav">
-      <div class="ni">
-        <div class="icon-wrap on"><div class="icon-dot on"></div></div>
-        <span class="on">HOME</span>
-      </div>
-      <div class="ni">
-        <div class="icon-wrap"><div class="icon-dot"></div></div>
-        <span>BRAIN</span>
-      </div>
-      <div class="ni">
-        <div class="icon-wrap"><div class="icon-dot"></div></div>
-        <span>CREDITS</span>
-      </div>
-      <div class="ni">
-        <div class="icon-wrap"><div class="icon-dot"></div></div>
-        <span>BODY</span>
-      </div>
-      <div class="ni">
-        <div class="icon-wrap"><div class="icon-dot"></div></div>
-        <span>REVIEW</span>
-      </div>
+    <div class="form-row">
+      <div class="field"><label>Referente Aziendale</label><input type="text" id="referente"></div>
+      <div class="field"><label>Tel. Referente</label><input type="tel" id="referente_tel"></div>
     </div>
+  </div>
 
+  <div class="card">
+    <div class="card-title"><div class="icon">👷</div> Dati Occupazionali</div>
+    <div class="form-row triple">
+      <div class="field"><label>Soci Operativi</label><input type="number" id="soci" min="0" value="0"></div>
+      <div class="field"><label>Dipendenti</label><input type="number" id="dipendenti" min="0" value="0"></div>
+      <div class="field"><label>Collaboratori</label><input type="number" id="collaboratori" min="0" value="0"></div>
+    </div>
+    <div class="form-row">
+      <div class="field"><label>Data DVR originale</label><input type="month" id="data_dvr"></div>
+      <div class="field"><label>Data Aggiornamento</label><input type="date" id="data_aggiornamento"></div>
+    </div>
+  </div>
+
+  <div class="nav-spacer"></div>
+  <div class="bottom-nav">
+    <button class="btn btn-secondary" onclick="goHome()">← Home</button>
+    <button class="btn btn-primary" onclick="nextSection()">Avanti →</button>
   </div>
 </div>
 
-<div class="caption">
-  <strong>Palette:</strong> #0f0f0f · #1a1a1a · #262626 · #fff<br>
-  <strong>Accento:</strong> blu #3b82f6 solo su elementi interattivi<br>
-  <strong>Glass:</strong> backdrop-blur leggibile, non opaco
+<!-- ══════════════════════════════ SCREEN 2: FORMAZIONE ══════════════════════════════ -->
+<div class="screen" id="screen-2">
+  <div class="section-tabs" id="sectionTabs2"></div>
+
+  <div class="card">
+    <div class="card-title"><div class="icon">📚</div> Piano Formativo Aziendale</div>
+    <div style="overflow-x:auto;">
+      <table class="training-table" id="trainingTable">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Cognome e Nome</th>
+            <th>Mansione</th>
+            <th>LR</th>
+            <th>Form. Gen. Scad.</th>
+            <th>Form. Spec. Scad.</th>
+            <th>Quota</th>
+            <th>PES-PAV</th>
+          </tr>
+        </thead>
+        <tbody id="trainingBody">
+        </tbody>
+      </table>
+    </div>
+    <button onclick="addTrainingRow()" style="margin-top:12px;padding:8px 14px;background:var(--accent2);color:var(--primary);border:1.5px dashed var(--accent);border-radius:8px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;cursor:pointer;width:100%;">+ Aggiungi lavoratore</button>
+  </div>
+
+  <div class="nav-spacer"></div>
+  <div class="bottom-nav">
+    <button class="btn btn-secondary" onclick="prevSection()">← Indietro</button>
+    <button class="btn btn-primary" onclick="nextSection()">Avanti →</button>
+  </div>
 </div>
 
+<!-- ══════════════════════════════ SCREEN 3: ANALISI DOCUMENTALE ══════════════════════════════ -->
+<div class="screen" id="screen-3">
+  <div class="section-tabs" id="sectionTabs3"></div>
+
+  <div class="card">
+    <div class="card-title"><div class="icon">📋</div> Analisi Documentale</div>
+    <div id="docCheckList"></div>
+  </div>
+
+  <div class="nav-spacer"></div>
+  <div class="bottom-nav">
+    <button class="btn btn-secondary" onclick="prevSection()">← Indietro</button>
+    <button class="btn btn-primary" onclick="nextSection()">Avanti →</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════ SCREEN 4: RISCHI SPECIFICI ══════════════════════════════ -->
+<div class="screen" id="screen-4">
+  <div class="section-tabs" id="sectionTabs4"></div>
+
+  <div class="card">
+    <div class="card-title"><div class="icon">⚠️</div> Valutazione Rischi Specifici</div>
+    <div id="rischioList"></div>
+  </div>
+
+  <div class="nav-spacer"></div>
+  <div class="bottom-nav">
+    <button class="btn btn-secondary" onclick="prevSection()">← Indietro</button>
+    <button class="btn btn-primary" onclick="nextSection()">Avanti →</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════ SCREEN 5: ADEMPIMENTI & OUTPUT ══════════════════════════════ -->
+<div class="screen" id="screen-5">
+  <div class="section-tabs" id="sectionTabs5"></div>
+
+  <div class="summary-header">
+    <h2 id="summaryTitle">Riepilogo Ispezione</h2>
+    <p id="summaryMeta">—</p>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><div class="icon">⚠️</div> Adempimenti Rilevati</div>
+    <div id="adempimentiList" class="adempimenti-list"></div>
+    <div style="margin-top:14px;">
+      <div class="field"><label>Note aggiuntive al Datore di Lavoro</label><textarea id="noteFinali" rows="3" placeholder="Eventuali osservazioni aggiuntive..."></textarea></div>
+    </div>
+  </div>
+
+  <div class="nav-spacer"></div>
+  <div class="bottom-nav">
+    <button class="btn btn-secondary" onclick="prevSection()">← Indietro</button>
+    <button class="btn btn-accent" onclick="generatePDF()">⬇ Esporta PDF</button>
+  </div>
+</div>
+
+<script>
+// ══════════════════════════════════════════════════════════════
+// DATA
+// ══════════════════════════════════════════════════════════════
+
+const SECTIONS = [
+  { id: 1, label: "Dati Aziendali" },
+  { id: 2, label: "Formazione" },
+  { id: 3, label: "Analisi Doc." },
+  { id: 4, label: "Rischi Spec." },
+  { id: 5, label: "Riepilogo" }
+];
+
+const DOC_CHECKS = [
+  { id: "agibilita", label: "Agibilità Locali", opts: ["OK", "DA FARE", "N.P."] },
+  { id: "imp_elettrico", label: "Impianto Elettrico — Dichiarazione Conformità", opts: ["OK", "DA VERIFICARE", "N.P."] },
+  { id: "messa_terra", label: "Impianto di Messa a Terra — Verifica Periodica", opts: ["OK", "DA FARE", "SCADUTA", "N.P."] },
+  { id: "antincendio", label: "Valutazione Rischio Incendio", opts: ["OK", "DA AGGIORNARE", "N.P."] },
+  { id: "cpi", label: "CPI (Certificato Prevenzione Incendi)", opts: ["PRESENTE", "SCADUTO", "N.P."] },
+  { id: "dpi", label: "DPI — Verbali di Consegna", opts: ["OK", "DA COMPILARE", "N.P."] },
+  { id: "schede_sicurezza", label: "Schede Sicurezza Sostanze", opts: ["OK", "DA AGGIORNARE", "N.P."] },
+  { id: "stress_lc", label: "Valutazione Stress Lavoro Correlato", opts: ["OK", "DA AGGIORNARE", "N.P."] },
+  { id: "piano_emergenza", label: "Piano di Emergenza", opts: ["ADEGUATO", "DA FARE", "N.P."] },
+  { id: "sorveglianza_san", label: "Sorveglianza Sanitaria (visite)", opts: ["OK", "DA FARE", "N.P."] },
+  { id: "rumore_mis", label: "Misurazione Rumore", opts: ["OK", "DA AGGIORNARE", "N.P."] },
+  { id: "vibrazioni_mis", label: "Misurazione Vibrazioni", opts: ["OK", "DA AGGIORNARE", "N.P."] },
+  { id: "campi_em", label: "Misurazione Campi Elettromagnetici", opts: ["OK", "DA AGGIORNARE", "N.P."] },
+];
+
+const RISCHI = [
+  "Lavoro al VDT",
+  "Ambienti Confinati / Sospetto Inquinamento",
+  "Lavoro in Altezza (> 2m) / Terreni Scoscesi",
+  "Lavoro all'Aperto",
+  "Scariche Atmosferiche",
+  "Rumore",
+  "Vibrazioni",
+  "Campi Elettromagnetici",
+  "Radiazioni Ottiche Artificiali",
+  "Agenti Chimici (comprese polveri)",
+  "Agenti Cancerogeni / Mutageni",
+  "Amianto",
+  "Agenti Biologici",
+  "Atmosfere Esplosive",
+  "Lavori Sotto Tensione / Prossimità Impianti Elettrici",
+  "Movimentazione Manuale Carichi",
+  "Posture Incongrue",
+  "Movimenti Ripetitivi",
+  "Lavoro in Solitario / Condizioni Particolari",
+  "Interazione con Animali",
+  "Lavoratrici Gestanti",
+  "Assunzione Sostanze Alcoliche",
+];
+
+// Mock clients
+const MOCK_CLIENTS = [
+  { id: 1, name: "Astico Energia S.r.l.", location: "Calvene (VI)", ateco: "35.11 — Produzione Energia Elettrica", lastDVR: "2024-09" },
+  { id: 2, name: "Ferrarin Costruzioni S.p.A.", location: "Thiene (VI)", ateco: "41.20 — Costruzione Edifici", lastDVR: "2023-06" },
+  { id: 3, name: "Officine Venete S.r.l.", location: "Schio (VI)", ateco: "25.11 — Strutture Metalliche", lastDVR: "2024-03" },
+];
+
+let currentScreen = 0;
+let state = {
+  trainingRows: [],
+  docChecks: {},
+  rischi: {},
+  docNotes: {},
+};
+
+// ══════════════════════════════════════════════════════════════
+// INIT
+// ══════════════════════════════════════════════════════════════
+
+function init() {
+  renderClientList();
+  renderDocChecks();
+  renderRischi();
+  addTrainingRow();
+  addTrainingRow();
+}
+
+function renderClientList() {
+  const list = document.getElementById('clientList');
+  list.innerHTML = MOCK_CLIENTS.map(c => `
+    <div class="client-item" onclick="loadClient(${c.id})">
+      <div>
+        <div class="client-name">${c.name}</div>
+        <div class="client-meta">${c.location} · ${c.ateco}</div>
+        <div class="client-meta">Ultimo DVR: ${c.lastDVR || '—'}</div>
+      </div>
+      <div class="arrow">›</div>
+    </div>
+  `).join('');
+}
+
+function loadClient(id) {
+  const c = MOCK_CLIENTS.find(x => x.id === id);
+  if (!c) return;
+  if (id === 1) {
+    // Pre-fill Astico data
+    document.getElementById('ragione_sociale').value = "Astico Energia S.r.l.";
+    document.getElementById('piva').value = "03192160244";
+    document.getElementById('sede_legale').value = "Via Maglio, 8 — 36030 Calvene (VI)";
+    document.getElementById('sede_op1').value = "Via Maglio, 8 — 36030 Calvene (VI) — Centrale 1";
+    document.getElementById('sede_op2').value = "Via Serra snc — 36030 Lugo di Vicenza (VI) — Centrale 2";
+    document.getElementById('sede_uff').value = "Via Pastorelle, 10 — 36016 Thiene (VI)";
+    document.getElementById('telefono').value = "335 8496466";
+    document.getElementById('pec').value = "asticoenergia@pec.it";
+    document.getElementById('ateco').value = "35.11";
+    document.getElementById('livello_rischio').value = "ALTO";
+    document.getElementById('datore_lavoro').value = "Ferrarin Alessandro";
+    document.getElementById('rspp').value = "Lora Giancarlo";
+    document.getElementById('medico').value = "Meneghini Valentina";
+    document.getElementById('referente').value = "Forlin Enrico";
+    document.getElementById('referente_tel').value = "334 8918054";
+    document.getElementById('soci').value = "2";
+    document.getElementById('dipendenti').value = "3";
+    document.getElementById('data_dvr').value = "2024-09";
+    document.getElementById('data_aggiornamento').value = "2025-07-23";
+  } else {
+    document.getElementById('ragione_sociale').value = c.name;
+    document.getElementById('ateco').value = c.ateco.split(' ')[0];
+    document.getElementById('data_aggiornamento').value = new Date().toISOString().split('T')[0];
+  }
+  goToScreen(1);
+}
+
+function newInspection() {
+  clearForm();
+  document.getElementById('data_aggiornamento').value = new Date().toISOString().split('T')[0];
+  goToScreen(1);
+}
+
+function clearForm() {
+  ['ragione_sociale','piva','sede_legale','sede_op1','sede_op2','sede_uff',
+   'telefono','pec','ateco','datore_lavoro','rspp','medico','rls',
+   'referente','referente_tel','noteFinali'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.value = '';
+  });
+  ['soci','dipendenti','collaboratori'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.value = '0';
+  });
+  document.getElementById('livello_rischio').value = '';
+  state.docChecks = {};
+  state.rischi = {};
+  state.docNotes = {};
+  state.trainingRows = [];
+  document.getElementById('trainingBody').innerHTML = '';
+  addTrainingRow();
+  renderDocChecksState();
+  renderRischiState();
+}
+
+// ══════════════════════════════════════════════════════════════
+// NAVIGATION
+// ══════════════════════════════════════════════════════════════
+
+function goHome() {
+  goToScreen(0);
+}
+
+function goToScreen(n) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  if (n === 0) {
+    document.getElementById('screen-home').classList.add('active');
+    document.getElementById('stepLabel').textContent = 'Selezione Cliente';
+    document.getElementById('progressFill').style.width = '0%';
+    currentScreen = 0;
+  } else {
+    document.getElementById('screen-' + n).classList.add('active');
+    currentScreen = n;
+    updateProgress();
+    renderSectionTabs(n);
+    if (n === 5) buildSummary();
+  }
+  window.scrollTo(0, 0);
+}
+
+function nextSection() {
+  if (currentScreen < 5) goToScreen(currentScreen + 1);
+}
+function prevSection() {
+  if (currentScreen > 1) goToScreen(currentScreen - 1);
+  else goHome();
+}
+
+function updateProgress() {
+  const pct = ((currentScreen - 1) / 4) * 100;
+  document.getElementById('progressFill').style.width = pct + '%';
+  document.getElementById('stepLabel').textContent = SECTIONS[currentScreen - 1].label;
+}
+
+function renderSectionTabs(active) {
+  const targets = ['sectionTabs', 'sectionTabs2', 'sectionTabs3', 'sectionTabs4', 'sectionTabs5'];
+  targets.forEach(id => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.innerHTML = SECTIONS.map(s => `
+      <button class="tab-btn ${s.id === active ? 'active' : ''}" onclick="goToScreen(${s.id})">${s.label}</button>
+    `).join('');
+  });
+}
+
+// ══════════════════════════════════════════════════════════════
+// TRAINING TABLE
+// ══════════════════════════════════════════════════════════════
+
+function addTrainingRow() {
+  const id = Date.now();
+  state.trainingRows.push({ id });
+  const tbody = document.getElementById('trainingBody');
+  const rowNum = tbody.rows.length + 1;
+  const tr = document.createElement('tr');
+  tr.id = 'tr-' + id;
+  tr.innerHTML = `
+    <td>${rowNum}</td>
+    <td><input type="text" placeholder="Cognome Nome" id="name-${id}"></td>
+    <td><input type="text" placeholder="M1, M2…" id="mansione-${id}" style="width:60px"></td>
+    <td>
+      <select id="lr-${id}" style="border:1.5px solid var(--border);border-radius:6px;padding:5px;font-size:12px;background:#fafaf8;">
+        <option value="">—</option><option>A</option><option>M</option><option>B</option>
+      </select>
+    </td>
+    <td><input type="month" id="gen-${id}"></td>
+    <td><input type="month" id="spec-${id}"></td>
+    <td>
+      <select id="quota-${id}" style="border:1.5px solid var(--border);border-radius:6px;padding:5px;font-size:12px;background:#fafaf8;">
+        <option value="">—</option><option>OK</option><option>DA FARE</option><option>N.P.</option>
+      </select>
+    </td>
+    <td>
+      <select id="pespav-${id}" style="border:1.5px solid var(--border);border-radius:6px;padding:5px;font-size:12px;background:#fafaf8;">
+        <option value="">—</option><option>OK</option><option>DA FARE</option><option>N.P.</option>
+      </select>
+    </td>
+  `;
+  tbody.appendChild(tr);
+}
+
+function getTrainingData() {
+  return state.trainingRows.map((r, i) => ({
+    num: i + 1,
+    name: document.getElementById('name-' + r.id)?.value || '',
+    mansione: document.getElementById('mansione-' + r.id)?.value || '',
+    lr: document.getElementById('lr-' + r.id)?.value || '',
+    gen: document.getElementById('gen-' + r.id)?.value || '',
+    spec: document.getElementById('spec-' + r.id)?.value || '',
+    quota: document.getElementById('quota-' + r.id)?.value || '',
+    pespav: document.getElementById('pespav-' + r.id)?.value || '',
+  })).filter(r => r.name);
+}
+
+// ══════════════════════════════════════════════════════════════
+// DOC CHECKS
+// ══════════════════════════════════════════════════════════════
+
+function renderDocChecks() {
+  const container = document.getElementById('docCheckList');
+  container.innerHTML = DOC_CHECKS.map(item => `
+    <div class="status-row" id="row-${item.id}">
+      <div class="label">${item.label}</div>
+      <div class="toggle-group">
+        ${item.opts.map(opt => `
+          <button class="toggle-btn" onclick="setCheck('${item.id}', '${opt}', this)" data-val="${opt}">${opt}</button>
+        `).join('')}
+      </div>
+    </div>
+    <div class="note-area" id="note-area-${item.id}">
+      <div class="note-label">📝 Nota</div>
+      <textarea rows="2" placeholder="Aggiungi dettagli…" onchange="state.docNotes['${item.id}']=this.value"></textarea>
+    </div>
+  `).join('');
+}
+
+function setCheck(id, val, btn) {
+  state.docChecks[id] = val;
+  const row = document.getElementById('row-' + id);
+  row.querySelectorAll('.toggle-btn').forEach(b => {
+    b.className = 'toggle-btn';
+    if (b === btn) {
+      if (val === 'OK' || val === 'PRESENTE' || val === 'ADEGUATO') b.classList.add('active-ok');
+      else if (val === 'N.P.') b.classList.add('active-np');
+      else if (val === 'DA FARE' || val === 'DA AGGIORNARE' || val === 'SCADUTA' || val === 'SCADUTO' || val === 'DA VERIFICARE' || val === 'DA COMPILARE') b.classList.add('active-warn');
+      else b.classList.add('active-warn');
+    }
+  });
+  const noteArea = document.getElementById('note-area-' + id);
+  if (val !== 'OK' && val !== 'N.P.' && val !== 'PRESENTE' && val !== 'ADEGUATO') {
+    noteArea.classList.add('visible');
+  } else {
+    noteArea.classList.remove('visible');
+  }
+}
+
+function renderDocChecksState() {
+  DOC_CHECKS.forEach(item => {
+    document.getElementById('row-' + item.id)?.querySelectorAll('.toggle-btn').forEach(b => b.className = 'toggle-btn');
+    const noteArea = document.getElementById('note-area-' + item.id);
+    if (noteArea) noteArea.classList.remove('visible');
+  });
+}
+
+// ══════════════════════════════════════════════════════════════
+// RISCHI SPECIFICI
+// ══════════════════════════════════════════════════════════════
+
+function renderRischi() {
+  const container = document.getElementById('rischioList');
+  container.innerHTML = RISCHI.map((r, i) => `
+    <div class="status-row">
+      <div class="label">${r}</div>
+      <div class="toggle-group">
+        <button class="toggle-btn" onclick="setRischio(${i}, 'PRESENTE', this)">Presente</button>
+        <button class="toggle-btn" onclick="setRischio(${i}, 'PARZIALE', this)">Parziale</button>
+        <button class="toggle-btn" onclick="setRischio(${i}, 'ASSENTE', this)">Assente</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+function setRischio(i, val, btn) {
+  state.rischi[i] = val;
+  btn.closest('.status-row').querySelectorAll('.toggle-btn').forEach(b => {
+    b.className = 'toggle-btn';
+    if (b === btn) {
+      if (val === 'PRESENTE') b.classList.add('active-no');
+      else if (val === 'PARZIALE') b.classList.add('active-warn');
+      else b.classList.add('active-ok');
+    }
+  });
+}
+
+function renderRischiState() {
+  document.querySelectorAll('#rischioList .toggle-btn').forEach(b => b.className = 'toggle-btn');
+}
+
+// ══════════════════════════════════════════════════════════════
+// SUMMARY
+// ══════════════════════════════════════════════════════════════
+
+function buildSummary() {
+  const rs = document.getElementById('ragione_sociale').value || '—';
+  const dt = document.getElementById('data_aggiornamento').value || '—';
+  document.getElementById('summaryTitle').textContent = rs;
+  document.getElementById('summaryMeta').textContent = 'Data ispezione: ' + (dt ? formatDate(dt) : '—');
+
+  const adempimenti = [];
+
+  // Training issues
+  const trainingIssues = [];
+  getTrainingData().forEach(r => {
+    if (r.quota === 'DA FARE') trainingIssues.push(`Formazione Lavori in Quota: ${r.name}`);
+    if (r.pespav === 'DA FARE') trainingIssues.push(`Formazione PES-PAV: ${r.name}`);
+  });
+  if (trainingIssues.length) adempimenti.push({ cat: '1 — Formazione Lavoratori', items: trainingIssues });
+
+  // Doc checks
+  const docIssues = [];
+  DOC_CHECKS.forEach(item => {
+    const val = state.docChecks[item.id];
+    if (val && val !== 'OK' && val !== 'N.P.' && val !== 'PRESENTE' && val !== 'ADEGUATO') {
+      docIssues.push(`${item.label}: ${val}${state.docNotes[item.id] ? ' — ' + state.docNotes[item.id] : ''}`);
+    }
+  });
+  if (docIssues.length) adempimenti.push({ cat: '2 — Rischi Connessi ai Luoghi / Documentazione', items: docIssues });
+
+  // Rischi
+  const rischiPresenti = [];
+  RISCHI.forEach((r, i) => {
+    if (state.rischi[i] === 'PRESENTE') rischiPresenti.push(r + ': valutazione presente nel DVR');
+    else if (state.rischi[i] === 'PARZIALE') rischiPresenti.push(r + ': valutazione da completare/aggiornare');
+  });
+  if (rischiPresenti.length) adempimenti.push({ cat: '3 — Rischi Specifici', items: rischiPresenti });
+
+  const container = document.getElementById('adempimentiList');
+  if (adempimenti.length === 0) {
+    container.innerHTML = `<div style="text-align:center;padding:20px;color:var(--accent);font-weight:600;">✓ Nessun adempimento critico rilevato</div>`;
+  } else {
+    container.innerHTML = adempimenti.map(a => `
+      <div class="adempimento-item">
+        <div class="cat">${a.cat}</div>
+        ${a.items.map(i => `<div class="text">— ${i}</div>`).join('')}
+      </div>
+    `).join('');
+  }
+}
+
+// ══════════════════════════════════════════════════════════════
+// PDF GENERATION
+// ══════════════════════════════════════════════════════════════
+
+async function generatePDF() {
+  showAlert('⏳ Generazione PDF in corso…');
+
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+
+  const W = 210, ml = 15, mr = 15, cw = W - ml - mr;
+  let y = 15;
+
+  const colors = {
+    primary: [26, 46, 26],
+    accent: [74, 124, 74],
+    light: [232, 240, 232],
+    warn: [192, 57, 43],
+    warnLight: [253, 236, 234],
+    border: [209, 207, 200],
+    muted: [107, 114, 128],
+    white: [255, 255, 255],
+    bg: [244, 242, 237],
+  };
+
+  function setFont(style, size, color) {
+    doc.setFont('helvetica', style);
+    doc.setFontSize(size);
+    doc.setTextColor(...(color || colors.primary));
+  }
+
+  function hline(yy, col) {
+    doc.setDrawColor(...(col || colors.border));
+    doc.setLineWidth(0.3);
+    doc.line(ml, yy, W - mr, yy);
+  }
+
+  function rect(x, yy, w, h, fillColor, strokeColor) {
+    if (fillColor) { doc.setFillColor(...fillColor); doc.rect(x, yy, w, h, 'F'); }
+    if (strokeColor) { doc.setDrawColor(...strokeColor); doc.setLineWidth(0.3); doc.rect(x, yy, w, h, 'S'); }
+  }
+
+  function checkNewPage(needed) {
+    if (y + needed > 275) {
+      doc.addPage();
+      y = 15;
+      addPageHeader();
+    }
+  }
+
+  const ragioneSociale = document.getElementById('ragione_sociale').value || '—';
+  const dataAgg = document.getElementById('data_aggiornamento').value || '';
+  const dataDVR = document.getElementById('data_dvr').value || '';
+  const piva = document.getElementById('piva').value || '—';
+
+  function addPageHeader() {
+    rect(0, 0, W, 10, colors.primary);
+    setFont('normal', 7, colors.white);
+    doc.text('DOCUMENTO REDATTO IN COLLABORAZIONE CON LOGI SICUREX S.R.L.S. — P.IVA: 04567620242 — TEL: 375 8360127', W / 2, 6, { align: 'center' });
+    rect(0, 10, W, 8, colors.light);
+    setFont('bold', 8, colors.primary);
+    doc.text(ragioneSociale.toUpperCase(), ml, 15);
+    setFont('normal', 8, colors.muted);
+    doc.text('CHECK AGGIORNAMENTO DVR', W - mr, 15, { align: 'right' });
+    hline(18, colors.accent);
+  }
+
+  // ── PAGE 1 COVER ──
+  rect(0, 0, W, 297, colors.bg);
+  rect(0, 0, W, 60, colors.primary);
+
+  setFont('bold', 28, colors.white);
+  doc.text(ragioneSociale, W / 2, 28, { align: 'center' });
+
+  setFont('normal', 12, [180, 220, 180]);
+  doc.text('CHECK AGGIORNAMENTO', W / 2, 40, { align: 'center' });
+  doc.text('DOCUMENTO VALUTAZIONE RISCHI', W / 2, 48, { align: 'center' });
+
+  rect(ml, 70, cw / 2 - 5, 18, colors.white, colors.border);
+  rect(ml + cw / 2 + 5, 70, cw / 2 - 5, 18, colors.white, colors.border);
+  setFont('bold', 8, colors.muted);
+  doc.text('DATA DVR', ml + 5, 77);
+  doc.text('DATA AGGIORNAMENTO', ml + cw / 2 + 10, 77);
+  setFont('normal', 10, colors.primary);
+  doc.text(dataDVR ? formatMonth(dataDVR).toUpperCase() : '—', ml + 5, 83);
+  doc.text(dataAgg ? formatDate(dataAgg).toUpperCase() : '—', ml + cw / 2 + 10, 83);
+
+  // Logi Sicurex box
+  rect(ml, 100, cw / 2 - 5, 30, colors.white, colors.border);
+  setFont('bold', 9, colors.primary);
+  doc.text('LOGI SICUREX S.R.L.S.', ml + 5, 108);
+  setFont('normal', 8, colors.muted);
+  doc.text('VIA F. BARACCA, 204 — 36100 VICENZA (VI)', ml + 5, 114);
+  doc.text('TEL: 375 8360127', ml + 5, 120);
+  doc.text('P.IVA: 04567620242', ml + 5, 126);
+
+  rect(ml + cw / 2 + 5, 100, cw / 2 - 5, 30, colors.white, colors.border);
+  setFont('bold', 9, colors.primary);
+  doc.text(ragioneSociale.toUpperCase(), ml + cw / 2 + 10, 108);
+  setFont('normal', 8, colors.muted);
+  const sedeLegale = document.getElementById('sede_legale').value || '';
+  const wrappedSede = doc.splitTextToSize(sedeLegale, cw / 2 - 15);
+  doc.text(wrappedSede, ml + cw / 2 + 10, 114);
+
+  doc.addPage();
+  y = 22;
+  addPageHeader();
+
+  // ── SECTION: DATI AZIENDALI ──
+  y = 25;
+  rect(ml, y, cw, 8, colors.primary);
+  setFont('bold', 9, colors.white);
+  doc.text('DATI AZIENDALI', ml + 4, y + 5.5);
+  y += 12;
+
+  function infoRow(labelA, valA, labelB, valB) {
+    checkNewPage(10);
+    rect(ml, y, cw / 2 - 2, 8, [250, 249, 246], colors.border);
+    rect(ml + cw / 2 + 2, y, cw / 2 - 2, 8, [250, 249, 246], colors.border);
+    setFont('bold', 7, colors.muted);
+    doc.text(labelA.toUpperCase(), ml + 3, y + 3);
+    setFont('normal', 8, colors.primary);
+    doc.text(String(valA || '—'), ml + 3, y + 6.5);
+    if (labelB) {
+      setFont('bold', 7, colors.muted);
+      doc.text(labelB.toUpperCase(), ml + cw / 2 + 5, y + 3);
+      setFont('normal', 8, colors.primary);
+      doc.text(String(valB || '—'), ml + cw / 2 + 5, y + 6.5);
+    }
+    y += 10;
+  }
+
+  infoRow('Ragione Sociale', ragioneSociale, 'P.IVA', piva);
+  infoRow('Sede Legale', document.getElementById('sede_legale').value, 'Codice ATECO', document.getElementById('ateco').value + ' (Rischio ' + (document.getElementById('livello_rischio').value || '—') + ')');
+  infoRow('Datore di Lavoro', document.getElementById('datore_lavoro').value, 'RSPP', document.getElementById('rspp').value);
+  infoRow('Medico Competente', document.getElementById('medico').value, 'RLS', document.getElementById('rls').value || '—');
+  infoRow('Referente Aziendale', document.getElementById('referente').value + ' ' + (document.getElementById('referente_tel').value || ''), 'Dipendenti Totali', +document.getElementById('soci').value + +document.getElementById('dipendenti').value + +document.getElementById('collaboratori').value + ' (Soci: ' + document.getElementById('soci').value + ' — Dip: ' + document.getElementById('dipendenti').value + ')');
+
+  y += 6;
+
+  // ── SECTION: FORMAZIONE ──
+  checkNewPage(20);
+  rect(ml, y, cw, 8, colors.primary);
+  setFont('bold', 9, colors.white);
+  doc.text('PIANO FORMATIVO AZIENDALE PER LA SICUREZZA', ml + 4, y + 5.5);
+  y += 12;
+
+  const trainingData = getTrainingData();
+  if (trainingData.length > 0) {
+    const cols = [8, 45, 20, 10, 25, 25, 20, 20];
+    const headers = ['#', 'Cognome e Nome', 'Mansioni', 'LR', 'Form. Gen.', 'Form. Spec.', 'Quota', 'PES-PAV'];
+    let tx = ml;
+    rect(ml, y, cw, 7, colors.light, colors.border);
+    headers.forEach((h, i) => {
+      setFont('bold', 7, colors.primary);
+      doc.text(h, tx + 2, y + 4.8);
+      tx += cols[i];
+    });
+    y += 7;
+
+    trainingData.forEach((r, ri) => {
+      checkNewPage(8);
+      rect(ml, y, cw, 7, ri % 2 === 0 ? colors.white : [249, 248, 245], colors.border);
+      tx = ml;
+      const vals = [r.num, r.name, r.mansione, r.lr, r.gen || '—', r.spec || '—', r.quota || '—', r.pespav || '—'];
+      vals.forEach((v, i) => {
+        setFont('normal', 7, colors.primary);
+        doc.text(String(v), tx + 2, y + 4.8);
+        tx += cols[i];
+      });
+      y += 7;
+    });
+    y += 6;
+  }
+
+  // ── SECTION: ANALISI DOCUMENTALE ──
+  checkNewPage(20);
+  rect(ml, y, cw, 8, colors.primary);
+  setFont('bold', 9, colors.white);
+  doc.text('ANALISI DOCUMENTALE', ml + 4, y + 5.5);
+  y += 12;
+
+  DOC_CHECKS.forEach((item, i) => {
+    checkNewPage(9);
+    const val = state.docChecks[item.id] || '—';
+    const isOk = val === 'OK' || val === 'PRESENTE' || val === 'ADEGUATO';
+    const isNP = val === 'N.P.' || val === '—';
+    const isBad = !isOk && !isNP;
+
+    rect(ml, y, cw - 30, 7, i % 2 === 0 ? colors.white : [249, 248, 245], colors.border);
+    rect(ml + cw - 30, y, 30, 7, isBad ? colors.warnLight : (isOk ? [232, 245, 232] : [243, 244, 246]), colors.border);
+
+    setFont('normal', 8, colors.primary);
+    doc.text(item.label, ml + 3, y + 4.8);
+    setFont('bold', 7, isBad ? colors.warn : (isOk ? [46, 125, 50] : colors.muted));
+    doc.text(val, ml + cw - 28, y + 4.8);
+
+    const note = state.docNotes[item.id];
+    y += 7;
+    if (note && note.trim()) {
+      checkNewPage(7);
+      rect(ml + 4, y, cw - 4, 6, [255, 251, 235], [252, 211, 77]);
+      setFont('italic', 7, [146, 64, 14]);
+      doc.text('Nota: ' + note, ml + 7, y + 4);
+      y += 7;
+    }
+  });
+
+  y += 6;
+
+  // ── SECTION: RISCHI SPECIFICI ──
+  checkNewPage(20);
+  rect(ml, y, cw, 8, colors.primary);
+  setFont('bold', 9, colors.white);
+  doc.text('VALUTAZIONE RISCHI SPECIFICI', ml + 4, y + 5.5);
+  y += 12;
+
+  const rCols = [cw * 0.5, cw * 0.5];
+  RISCHI.forEach((r, i) => {
+    if (i % 2 === 0) {
+      checkNewPage(8);
+    }
+    const col = i % 2;
+    const rowY = col === 0 ? y : y;
+    const xOff = col === 0 ? ml : ml + rCols[0];
+    const val = state.rischi[i] || '—';
+    const bg = val === 'PRESENTE' ? colors.warnLight : val === 'PARZIALE' ? [255, 248, 225] : (val === 'ASSENTE' ? [232, 245, 232] : colors.white);
+    const textCol = val === 'PRESENTE' ? colors.warn : val === 'PARZIALE' ? [230, 81, 0] : (val === 'ASSENTE' ? [46, 125, 50] : colors.muted);
+
+    if (col === 0) {
+      rect(ml, y, cw, 7, i % 4 < 2 ? colors.white : [249, 248, 245], colors.border);
+    }
+    setFont('normal', 7, colors.primary);
+    doc.text(r, xOff + 2, y + 4.8);
+    setFont('bold', 7, textCol);
+    doc.text(val, xOff + rCols[0] - 22, y + 4.8);
+
+    if (col === 1) y += 7;
+  });
+  if (RISCHI.length % 2 !== 0) y += 7;
+  y += 6;
+
+  // ── SECTION: RIEPILOGO ADEMPIMENTI ──
+  doc.addPage();
+  y = 22;
+  addPageHeader();
+  y = 25;
+
+  rect(ml, y, cw, 8, colors.warn);
+  setFont('bold', 9, colors.white);
+  doc.text('RIEPILOGO FINALE ADEMPIMENTI SICUREZZA', ml + 4, y + 5.5);
+  y += 12;
+
+  setFont('normal', 8, colors.primary);
+  const introText = "Nell'ambito del sopralluogo finalizzato all'aggiornamento del Documento di Valutazione dei Rischi, sono state rilevate alcune carenze che richiedono adeguamento. Si ricorda che quanto indicato rappresenta un obbligo di legge.";
+  const introLines = doc.splitTextToSize(introText, cw);
+  doc.text(introLines, ml, y);
+  y += introLines.length * 5 + 6;
+
+  // Collect adempimenti
+  const groups = [];
+  const tIssues = [];
+  getTrainingData().forEach(r => {
+    if (r.quota === 'DA FARE') tIssues.push('Fare formazione Lavori in Quota: ' + r.name);
+    if (r.pespav === 'DA FARE') tIssues.push('Fare formazione PES-PAV: ' + r.name);
+  });
+  if (tIssues.length) groups.push({ cat: '1', title: 'FORMAZIONE LAVORATORI', items: tIssues });
+
+  const dIssues = [];
+  DOC_CHECKS.forEach(item => {
+    const val = state.docChecks[item.id];
+    if (val && val !== 'OK' && val !== 'N.P.' && val !== 'PRESENTE' && val !== 'ADEGUATO') {
+      dIssues.push(item.label + ': ' + val + (state.docNotes[item.id] ? ' — ' + state.docNotes[item.id] : ''));
+    }
+  });
+  if (dIssues.length) groups.push({ cat: '2', title: 'RISCHI CONNESSI AI LUOGHI DI LAVORO', items: dIssues });
+
+  const rIssues = [];
+  RISCHI.forEach((r, i) => {
+    if (state.rischi[i] === 'PARZIALE') rIssues.push(r + ': valutazione da completare/aggiornare nel DVR');
+  });
+  if (rIssues.length) groups.push({ cat: '3', title: 'MISURAZIONI / VALUTAZIONI DA AGGIORNARE', items: rIssues });
+
+  const noteFinali = document.getElementById('noteFinali').value;
+  if (noteFinali) groups.push({ cat: '—', title: 'NOTE AGGIUNTIVE', items: [noteFinali] });
+
+  if (groups.length === 0) {
+    checkNewPage(20);
+    rect(ml, y, cw, 14, [232, 245, 232], [76, 175, 80]);
+    setFont('bold', 10, [46, 125, 50]);
+    doc.text('✓ Nessun adempimento critico rilevato', W / 2, y + 9, { align: 'center' });
+    y += 18;
+  } else {
+    groups.forEach(g => {
+      checkNewPage(20);
+      rect(ml, y, 10, 8, colors.warn);
+      setFont('bold', 9, colors.white);
+      doc.text(g.cat, ml + 3, y + 5.5);
+      rect(ml + 10, y, cw - 10, 8, colors.warnLight, colors.border);
+      setFont('bold', 8, colors.warn);
+      doc.text(g.title, ml + 14, y + 5.5);
+      y += 10;
+      g.items.forEach(item => {
+        checkNewPage(10);
+        rect(ml, y, cw, 8, [255, 252, 252], colors.border);
+        setFont('normal', 8, colors.primary);
+        const lines = doc.splitTextToSize('— ' + item, cw - 8);
+        doc.text(lines, ml + 4, y + 5);
+        y += lines.length > 1 ? lines.length * 4.5 + 4 : 10;
+      });
+      y += 4;
+    });
+  }
+
+  // Signatures
+  checkNewPage(40);
+  y += 6;
+  hline(y, colors.border);
+  y += 8;
+  rect(ml, y, cw / 2 - 5, 20, [249, 248, 246], colors.border);
+  rect(ml + cw / 2 + 5, y, cw / 2 - 5, 20, [249, 248, 246], colors.border);
+  setFont('bold', 8, colors.primary);
+  doc.text('LOGI SICUREX S.R.L.S.', ml + 5, y + 7);
+  doc.text(ragioneSociale.toUpperCase(), ml + cw / 2 + 10, y + 7);
+  setFont('normal', 7, colors.muted);
+  doc.text('Firma e Timbro', ml + 5, y + 14);
+  doc.text('Firma Datore di Lavoro', ml + cw / 2 + 10, y + 14);
+
+  // Footer on all pages
+  const totalPages = doc.internal.getNumberOfPages();
+  for (let p = 2; p <= totalPages; p++) {
+    doc.setPage(p);
+    rect(0, 287, W, 10, colors.bg);
+    setFont('normal', 7, colors.muted);
+    doc.text(`PAG. ${p - 1} DI ${totalPages - 1} — DATA AGGIORNAMENTO: ${dataAgg ? formatDate(dataAgg) : '—'}`, W / 2, 293, { align: 'center' });
+  }
+
+  const filename = (ragioneSociale.replace(/[^a-z0-9]/gi, '_') || 'ispezione') + '_DVR_' + (dataAgg || 'check') + '.pdf';
+  doc.save(filename);
+  showAlert('✓ PDF generato e scaricato!');
+}
+
+// ══════════════════════════════════════════════════════════════
+// UTILS
+// ══════════════════════════════════════════════════════════════
+
+function formatDate(d) {
+  if (!d) return '—';
+  const [y, m, day] = d.split('-');
+  return `${day || '01'}/${m}/${y}`;
+}
+function formatMonth(d) {
+  if (!d) return '—';
+  const months = ['Gennaio','Febbraio','Marzo','Aprile','Maggio','Giugno','Luglio','Agosto','Settembre','Ottobre','Novembre','Dicembre'];
+  const [y, m] = d.split('-');
+  return months[parseInt(m) - 1] + ' ' + y;
+}
+
+function showAlert(msg) {
+  const el = document.getElementById('alert');
+  el.textContent = msg;
+  el.classList.add('show');
+  setTimeout(() => el.classList.remove('show'), 2500);
+}
+
+// ══════════════════════════════════════════════════════════════
+// START
+// ══════════════════════════════════════════════════════════════
+init();
+</script>
 </body>
 </html>
