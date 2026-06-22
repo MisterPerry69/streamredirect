@@ -1,0 +1,18 @@
+Metti qui le immagini dei mostri, una per file PNG.
+
+Il nome file deve essere lo "slug" del nome del mostro:
+- minuscolo
+- apostrofi rimossi
+- spazi e simboli sostituiti da trattini
+
+Esempi:
+  Nekker's Nest   -> nekkers-nest.png
+  Griffin         -> griffin.png
+  Water Hag       -> water-hag.png
+  Ghoul's Nest    -> ghouls-nest.png
+  Leshen          -> leshen.png
+
+Se un'immagine manca, lo slot mostra solo il nome del mostro (nessun errore).
+
+Fonte asset di riferimento (uso personale):
+github.com/swirle13/The-Witcher-Old-World-Tool  (cartella img)
