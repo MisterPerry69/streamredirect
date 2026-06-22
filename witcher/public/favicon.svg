@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <rect width="64" height="64" fill="#2b2018"/>
+  <circle cx="32" cy="32" r="22" fill="#8c6f3b" stroke="#f3e7cf" stroke-width="2"/>
+  <text x="32" y="32" font-family="Georgia, serif" font-size="28" font-weight="bold" fill="#f3e7cf" text-anchor="middle" dominant-baseline="central">W</text>
+</svg>

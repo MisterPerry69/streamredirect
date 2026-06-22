@@ -1,0 +1,16 @@
+{
+  "name": "The Witcher: Old World — Tracker",
+  "short_name": "TWOW Tracker",
+  "description": "Tracker per tracce mostro e missioni di The Witcher: Old World — Wild Hunt",
+  "start_url": ".",
+  "scope": ".",
+  "display": "fullscreen",
+  "orientation": "landscape",
+  "background_color": "#2b2018",
+  "theme_color": "#2b2018",
+  "icons": [
+    { "src": "public/icons/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "public/icons/icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "public/icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
