@@ -287,6 +287,7 @@ h1, h2, .title { font-family: var(--font-pixel); letter-spacing: 1px; }
   background: var(--wood-light);
   clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
   overflow: hidden;
+  user-select: none;
 }
 .hex-img {
   position: absolute; inset: 0;
