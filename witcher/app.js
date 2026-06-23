@@ -209,7 +209,8 @@ function render() {
  * ============================================================ */
 function renderSetup() {
   const wrap = el('div', 'setup-wrap')
-  const panel = el('div', 'panel setup-panel')
+  // Stesso template dei dialog: cornice dialog-box.png come background
+  const panel = el('div', 'dialog setup-dialog')
   panel.innerHTML = `
     <div class="panel-header"><span>NUOVA PARTITA</span></div>
     <div class="panel-body setup-body"></div>`
@@ -261,21 +262,31 @@ function renderTable() {
 
   const missions = el('div', 'panel missions')
   missions.innerHTML = `
-    <div class="panel-header">
-      <span>MISSIONI</span>
-      <button class="new-game-btn">⟳ NUOVA</button>
-    </div>
+    <div class="panel-header"><span>MISSIONI</span></div>
     <div class="panel-body"></div>`
-  missions.querySelector('.new-game-btn').onclick = newGame
   const mbody = missions.querySelector('.panel-body')
   orderedMissions().forEach((m) => mbody.appendChild(missionCard(m)))
-  const add = el('button', 'btn btn-primary', '+ MISSIONE')
+  const add = el('button', 'add-mission', '+ MISSIONE')
   add.onclick = () => {
     state.missions.push({ id: newId(), numero: state.nextMissionNumber++, witcherIds: [], markers: [] })
     save(); render()
   }
   mbody.appendChild(add)
   t.appendChild(missions)
+
+  // Bottone "Nuova partita" floating sopra la stage
+  const ng = el('button', 'new-game-btn', '⟳ NUOVA')
+  ng.onclick = newGame
+  t.appendChild(ng)
+
+  // Hotspot sopra le icone foresta/acqua/montagna del bg_table.png:
+  // click = random luogo singolo (per missioni/eventi dove serve un luogo specifico)
+  TERRAINS.forEach((terr) => {
+    const spot = el('button', 'terrain-spot terrain-spot-' + terr)
+    spot.title = 'Estrai un luogo di ' + TERRAIN_LABELS[terr]
+    spot.onclick = () => peekRandomLocation(terr)
+    t.appendChild(spot)
+  })
 
   app.appendChild(t)
 }
@@ -372,7 +383,7 @@ function missionCard(m) {
     tok.addEventListener('pointerleave', () => clearTimeout(timer))
     markers.appendChild(tok)
   })
-  const addBtn = el('button', 'btn btn-sm', '+ LUOGO')
+  const addBtn = el('button', 'add-loc', '+ LUOGO')
   addBtn.onclick = () => chooseLocations(m.id)
   markers.appendChild(addBtn)
   card.appendChild(markers)
@@ -436,6 +447,19 @@ function followMonster(terrain, witcherId) {
     pool.map((l) => ({ label: `#${l.numero} ${l.nome}`, img: l.img })),
     { label: `#${result.numero} ${result.nome}`, img: result.img },
     () => { state.slots[terrain].tracks.push({ witcherId, loc: result }); save(); render() })
+}
+
+/* Estrae un singolo luogo dal mazzo del terreno (consuma la pila) e lo
+   mostra all'utente con randomizer. NON aggiunge tracce, niente effetti:
+   serve quando una missione/evento chiede un luogo specifico. */
+function peekRandomLocation(terrain) {
+  const pile = state.terrainPiles[terrain]
+  const pool = (pile.available.length ? pile.available : pile.used).map((l) => ({ ...l }))
+  const result = { ...drawFrom(pile) }
+  save()
+  slotMachineLook('LUOGO — ' + TERRAIN_LABELS[terrain].toUpperCase(),
+    pool.map((l) => ({ label: `#${l.numero} ${l.nome}`, img: l.img })),
+    { label: `#${result.numero} ${result.nome}`, img: result.img })
 }
 
 function defeatMonster(terrain) {
@@ -565,6 +589,59 @@ function slotMachine(title, pool, result, done) {
       reel.classList.add('landed')
       set(result)
       setTimeout(() => { ov.remove(); done() }, 750)
+      return
+    }
+    i = (i + 1) % items.length
+    set(items[i])
+    setTimeout(tick, 50 + Math.pow(elapsed / duration, 3) * 240)
+  }
+  setTimeout(tick, 50)
+}
+
+/* Variante del randomizer per il peek terreno: NON si chiude da sola,
+   resta in pausa sul risultato finché l'utente non preme OK. */
+function slotMachineLook(title, pool, result) {
+  closeDialog()
+  const ov = el('div', 'modal')
+  const dlg = el('div', 'dialog')
+  dlg.innerHTML = `
+    <div class="panel-header"><span>${title}</span></div>
+    <div class="panel-body">
+      <div class="reel">
+        <div class="reel-frame blur"><img alt=""></div>
+        <div class="reel-label"></div>
+      </div>
+    </div>
+    <div class="dialog-actions">
+      <button class="btn btn-primary" disabled>OK</button>
+    </div>`
+  ov.appendChild(dlg)
+  document.body.appendChild(ov)
+  openModal = ov
+
+  const okBtn = dlg.querySelector('.btn')
+  const frame = dlg.querySelector('.reel-frame')
+  const img   = dlg.querySelector('.reel-frame img')
+  const label = dlg.querySelector('.reel-label')
+  const reel  = dlg.querySelector('.reel')
+  okBtn.onclick = () => closeDialog()
+  img.onerror = () => { img.style.visibility = 'hidden' }
+
+  const items = pool.length ? pool : [result]
+  let i = 0
+  const start = performance.now(), duration = 1500
+  function set(it) {
+    applyPixelate(img, it.img, PIXEL_BLOCK.reel)
+    label.textContent = it.label
+  }
+  set(items[0])
+  function tick() {
+    const elapsed = performance.now() - start
+    if (elapsed >= duration) {
+      frame.classList.remove('blur')
+      reel.classList.add('landed')
+      set(result)
+      okBtn.disabled = false
       return
     }
     i = (i + 1) % items.length

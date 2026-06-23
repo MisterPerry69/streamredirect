@@ -76,15 +76,81 @@ h1, h2, .title { font-family: var(--font-pixel); letter-spacing: 1px; }
 /* ===== Stage = root layout ===== */
 #app { display: flex; align-items: center; justify-content: center; padding: 8px; }
 
+/* La stage del tavolo monta il PNG di sfondo a proporzione 1706/922.
+   Il layout interno NON usa più posizioni assolute % — solo grid/flex.
+   Padding-top elevato per posizionare gli elementi SOTTO le icone terrain e il titolo "MISSIONI" già disegnati nello sfondo. */
+.table {
+  background-image: url('public/ui/bg_table.png?v=6');
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  aspect-ratio: 1706 / 922;
+  width: min(100vw, calc(100vh * (1706 / 922)));
+  max-height: 100vh;
+  height: auto;
+  padding: 0;
+  position: relative;
+  /* container query: 1cqw = 1% della width della table → tutto interno scala col viewport */
+  container-type: inline-size;
+}
+
+/* Pannelli interni: trasparenti, niente bordi, niente header (titoli e icone sono nel PNG) */
+.table .panel {
+  background: none;
+  border: none;
+  outline: none;
+}
+.table .panel-header { display: none; }
+.table .panel-body {
+  background: none;
+  padding: 0% 10% 10% 12%;   /* top alto = sotto le icone tonde / titolo MISSIONI */
+  margin-top:22%;
+}
+
+/* Posizionamento card mostro all'interno della propria colonna (decisione utente)
+   — in cqw così su tablet scala proporzionalmente. */
+.table .monster-card { margin-top: 8.7cqw; margin-left: 4cqw; }
+.table .monster-card .btn-sm { margin-top: 1.2cqw; margin-bottom: 2.4cqw; }
+/* Spazio per il numero token che sbuca top-left, dentro al container .tracks
+   che ha overflow-y:auto (altrimenti viene clippato). */
+.table .tracks { padding: 10px 10px 0 10px; }
+
+/* Bottone NUOVA PARTITA — floating in alto a destra della stage */
+.table .new-game-btn {
+  position: absolute;
+  top: 6px; right: 8px;
+  background: var(--metal-dark);
+  color: var(--gold);
+  border: 1px solid var(--gold-dim);
+  padding: 4px 8px;
+  font-family: var(--font-pixel);
+  font-size: 9px;
+  z-index: 5;
+}
+
+/* Hotspot trasparenti sopra le icone tonde foresta/acqua/montagna del bg.
+   Click = randomizer di un luogo per quel terreno (peek). */
+.terrain-spot {
+  position: absolute;
+  width: 7cqw; height: 7cqw;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  z-index: 4;
+  /* aiuto visivo solo in debug:
+     outline: 1px dashed rgba(0,255,213,.5); */
+}
+.terrain-spot:active { transform: scale(.9); }
+/* Posizioni stimate dalle icone tonde nello sfondo bg_table.png — regolabili */
+.terrain-spot-forest   { top: 1.5cqw; left: 6.5cqw; }
+.terrain-spot-water    { top: 1.5cqw; left: 22.5cqw; }
+.terrain-spot-mountain { top: 1.5cqw; left: 38.5cqw; }
+
 /* ============================================
  * COMPONENTE BASE: pannello pixel art
  * ============================================ */
 .panel {
   background: var(--wood-dark);
-  border-top:    3px solid var(--wood-hi);
-  border-left:   3px solid var(--wood-hi);
-  border-right:  3px solid var(--metal-dark);
-  border-bottom: 3px solid var(--metal-dark);
+  border: 3px solid var(--metal-dark);
   outline: 2px solid var(--metal-dark);
   outline-offset: 0;
   position: relative;
@@ -126,35 +192,16 @@ h1, h2, .title { font-family: var(--font-pixel); letter-spacing: 1px; }
   padding: 6px 14px;
   background: var(--wood-light);
   color: var(--text);
-  border-top:    2px solid var(--wood-hi);
-  border-left:   2px solid var(--wood-hi);
-  border-right:  2px solid var(--wood-dark);
-  border-bottom: 2px solid var(--wood-dark);
-  outline: 2px solid var(--metal-dark);
+  border: 2px solid var(--metal-dark);
   text-transform: uppercase;
   letter-spacing: 1px;
   cursor: pointer;
 }
-.btn:active {
-  border-top-color:    var(--wood-dark);
-  border-left-color:   var(--wood-dark);
-  border-right-color:  var(--wood-hi);
-  border-bottom-color: var(--wood-hi);
-  transform: translate(1px, 1px);
-}
+.btn:active { transform: translate(1px, 1px); }
 .btn-primary {
   background: var(--gold);
   color: var(--text-ink);
-  border-top-color:    var(--gold-light);
-  border-left-color:   var(--gold-light);
-  border-right-color:  var(--gold-dim);
-  border-bottom-color: var(--gold-dim);
-}
-.btn-primary:active {
-  border-top-color:    var(--gold-dim);
-  border-left-color:   var(--gold-dim);
-  border-right-color:  var(--gold-light);
-  border-bottom-color: var(--gold-light);
+  border: 2px solid var(--metal-dark);
 }
 .btn-danger { background: var(--red-dark); }
 .btn-sm     { font-size: 14px; padding: 3px 8px; }
@@ -184,10 +231,7 @@ h1, h2, .title { font-family: var(--font-pixel); letter-spacing: 1px; }
   position: relative;
   width: 44px; height: 44px;
   background: var(--wood-dark);
-  border-top:    2px solid var(--wood-hi);
-  border-left:   2px solid var(--wood-hi);
-  border-right:  2px solid var(--metal-dark);
-  border-bottom: 2px solid var(--metal-dark);
+  border: 2px solid var(--metal-dark);
   border-radius: 50%;
   flex-shrink: 0;
   /* niente overflow hidden qui — il numero deve poter uscire dal cerchio */
@@ -221,8 +265,8 @@ h1, h2, .title { font-family: var(--font-pixel); letter-spacing: 1px; }
 }
 .token.done .token-img { opacity: .45; }
 
-.token-sm { width: 36px; height: 36px; }
-.token-sm .token-num { font-size: 10px; padding: 2px 4px; min-width: 18px; top: -5px; left: -5px; }
+.token-sm { width: 50px; height: 50px; }
+.token-sm .token-num { font-size: 11px; padding: 3px 5px; min-width: 20px; top: -6px; left: -6px; }
 
 /* ============================================
  * HEX mostro (esagono CSS, niente PNG)
@@ -290,15 +334,15 @@ h1, h2, .title { font-family: var(--font-pixel); letter-spacing: 1px; }
   display: flex; align-items: center; justify-content: center;
   width: 100%; height: 100%;
 }
-.setup-panel { width: min(640px, 96vw); }
+/* il setup è un .dialog (background dialog-box.png) renderizzato come stage */
+.setup-dialog { animation: none; }
 .setup-body {
   display: flex; flex-direction: column; align-items: center;
-  gap: 18px; padding: 24px;
+  gap: 14px; padding: 0;
 }
 .setup-title {
   font-family: var(--font-pixel); font-size: 14px;
-  color: var(--gold); text-align: center; line-height: 1.6;
-  text-shadow: 2px 2px 0 #000;
+  color: #6f5d18; text-align: center; line-height: 1.6;
 }
 .setup-sub {
   font-family: var(--font-ui); font-size: 22px;
@@ -320,10 +364,10 @@ h1, h2, .title { font-family: var(--font-pixel); letter-spacing: 1px; }
 .witcher-pick .w-name {
   font-family: var(--font-ui);
   font-size: 18px;
-  color: var(--text-dim);
+  color: #8d0000;
   letter-spacing: 1px;
 }
-.witcher-pick.sel .w-name { color: var(--gold-light); }
+.witcher-pick.sel .w-name { color: #8d0000; }
 
 /* ============================================
  * TAVOLO: griglia 2 colonne (mostri | missioni)
@@ -386,23 +430,35 @@ h1, h2, .title { font-family: var(--font-pixel); letter-spacing: 1px; }
   gap: 8px;
   overflow-y: auto;
   min-height: 0;
+  max-height: 510px;
 }
 
-/* Card missione */
+/* Card missione — legno scuro con bordo metallico spesso e 4 borchie agli angoli */
 .mission {
-  background: var(--wood);
-  border-top:    2px solid var(--wood-hi);
-  border-left:   2px solid var(--wood-hi);
-  border-right:  2px solid var(--wood-dark);
-  border-bottom: 2px solid var(--wood-dark);
-  outline: 1px solid var(--metal-dark);
-  padding: 8px;
-  display: flex; align-items: center; gap: 10px;
+  background:
+    radial-gradient(circle 4px at 10px 10px, #1a0e08 0, #1a0e08 4px, transparent 5px),
+    radial-gradient(circle 4px at calc(100% - 10px) 10px, #1a0e08 0, #1a0e08 4px, transparent 5px),
+    radial-gradient(circle 4px at 10px calc(100% - 10px), #1a0e08 0, #1a0e08 4px, transparent 5px),
+    radial-gradient(circle 4px at calc(100% - 10px) calc(100% - 10px), #1a0e08 0, #1a0e08 4px, transparent 5px),
+    repeating-linear-gradient(0deg,
+      var(--wood-light) 0px, var(--wood-light) 3px,
+      var(--wood) 3px, var(--wood) 6px);
+  border: 4px solid var(--metal-dark);
+  border-radius: 4px;
+  box-shadow: inset 0 0 0 1px #6e4a2c;
+  padding: 12px 18px;
+  display: flex; align-items: center; gap: 12px;
   flex-wrap: wrap;
+  position: relative;
 }
 .mission.done {
-  background: var(--green-dark);
-  outline-color: var(--green);
+  background:
+    radial-gradient(circle 4px at 10px 10px, #1a0e08 0, #1a0e08 4px, transparent 5px),
+    radial-gradient(circle 4px at calc(100% - 10px) 10px, #1a0e08 0, #1a0e08 4px, transparent 5px),
+    radial-gradient(circle 4px at 10px calc(100% - 10px), #1a0e08 0, #1a0e08 4px, transparent 5px),
+    radial-gradient(circle 4px at calc(100% - 10px) calc(100% - 10px), #1a0e08 0, #1a0e08 4px, transparent 5px),
+    repeating-linear-gradient(0deg, #3a5640 0px, #3a5640 3px, #2d4438 3px, #2d4438 6px);
+  box-shadow: inset 0 0 0 1px var(--green);
 }
 .mission-num {
   font-family: var(--font-pixel);
@@ -437,6 +493,45 @@ h1, h2, .title { font-family: var(--font-pixel); letter-spacing: 1px; }
 }
 .mission-actions { display: flex; gap: 4px; }
 
+/* "+ LUOGO" — pergamena chiara, bordo metallico, dentro la riga missione */
+.add-loc {
+  background: linear-gradient(180deg, #e8d4a8 0%, #c8ac80 100%);
+  border: 3px solid var(--metal-dark);
+  border-radius: 3px;
+  color: var(--text-ink);
+  font-family: var(--font-pixel);
+  font-size: 9px;
+  padding: 6px 12px;
+  cursor: pointer;
+  letter-spacing: 1px;
+  text-shadow: 1px 1px 0 rgba(255,255,255,.25);
+}
+.add-loc:active { transform: translate(1px, 1px); }
+
+/* "+ MISSIONE" — pergamena chiara con 4 borchie agli angoli, centrato */
+.add-mission {
+  background:
+    radial-gradient(circle 3px at 7px 7px, var(--metal-dark) 0, var(--metal-dark) 3px, transparent 4px),
+    radial-gradient(circle 3px at calc(100% - 7px) 7px, var(--metal-dark) 0, var(--metal-dark) 3px, transparent 4px),
+    radial-gradient(circle 3px at 7px calc(100% - 7px), var(--metal-dark) 0, var(--metal-dark) 3px, transparent 4px),
+    radial-gradient(circle 3px at calc(100% - 7px) calc(100% - 7px), var(--metal-dark) 0, var(--metal-dark) 3px, transparent 4px),
+    linear-gradient(180deg, #e8d4a8 0%, #c8ac80 100%);
+  border: 3px solid var(--metal-dark);
+  border-radius: 4px;
+  box-shadow: inset 0 0 0 1px rgba(0,0,0,.25);
+  color: var(--text-ink);
+  font-family: var(--font-pixel);
+  font-size: 12px;
+  padding: 12px 24px;
+  letter-spacing: 2px;
+  align-self: center;
+  width: min(60%, 280px);
+  margin-top: 4px;
+  cursor: pointer;
+  text-shadow: 1px 1px 0 rgba(255,255,255,.25);
+}
+.add-mission:active { transform: translate(1px, 1px); }
+
 /* ============================================
  * Slot vuoto / placeholder
  * ============================================ */
@@ -468,50 +563,82 @@ h1, h2, .title { font-family: var(--font-pixel); letter-spacing: 1px; }
 }
 @keyframes fade { from { opacity: 0; } }
 
+/* Dialog unico: cornice = dialog-box.png. Tutti i dialog hanno stessa misura
+   (aspect-ratio fisso). Contenuto in flusso naturale dentro al padding interno. */
 .dialog {
-  width: min(720px, 96vw);
+  width: min(760px, 96vw);
+  aspect-ratio: 1107 / 628;
   max-height: 92vh;
+  background-image: url('public/ui/dialog-box.png?v=6');
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
   display: flex; flex-direction: column;
+  padding: 5%;     /* spazio per la cornice disegnata */
   animation: rise .2s cubic-bezier(.2,.9,.3,1.2);
 }
 @keyframes rise { from { transform: translateY(8px) scale(.98); opacity: 0; } }
+
+/* I .panel/.panel-header/.panel-body dentro al .dialog perdono la decorazione
+   pannello: lo sfondo è la cornice PNG. */
+/* IMPORTANTE: NON includere .dialog.panel qui — sovrascriverebbe il background-image del dialog */
+.dialog .panel-header,
+.dialog .panel-body,
+.dialog .dialog-actions {
+  background: none;
+  border: none;
+  outline: none;
+}
+/* La cornice del .dialog è il PNG: rimuovo solo lo stile "pannello legno" che eredita */
+.dialog.panel { border: none; outline: none; }
+.dialog .panel-header {
+  padding: 0;
+  margin-bottom: 8px;
+  color: #fff3d7;
+  text-shadow: 2px 1px 0 #000;
+  font-family: var(--font-pixel);
+  font-size: 20px;
+  text-align: center;
+  display: block;
+}
 .dialog .panel-body {
+  flex: 1;
   display: flex; flex-direction: column;
-  gap: 14px; align-items: center;
-  padding: 18px;
+  gap: 12px; align-items: center;
+  padding: 0;
   overflow-y: auto;
+  min-height: 0;
 }
 .dialog-actions {
-  background: var(--metal-dark);
-  padding: 8px 12px;
-  display: flex; gap: 10px; justify-content: center;
-  border-top: 2px solid var(--gold);
+  padding: 8px 0 0 0;
+  display: flex; gap: 12px; justify-content: center;
 }
 
 /* Scelta livello mostro */
-.levels { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
+.levels { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; padding-top: 45px;}
 .level-btn {
-  background: none; cursor: pointer;
-  padding: 6px; transition: transform .12s;
+  border-radius: 4px;
+  cursor: pointer;
+  padding: 8px;
+  transition: transform .12s;
 }
 .level-btn img {
   width: 110px; height: auto;
   image-rendering: pixelated;
-  filter: drop-shadow(2px 2px 0 #000);
+  display: block;
 }
 .level-btn:active { transform: scale(.94); }
 
 /* Opzioni (witcher / luoghi nei dialog) */
 .opts {
-  display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;
+  display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; padding-top: 75px;
 }
 .opt {
   display: flex; flex-direction: column; align-items: center; gap: 4px;
   background: none; cursor: pointer; padding: 4px;
 }
-.opt .token { width: 56px; height: 56px; opacity: .55; }
+.opt .token { width: 80px; height: 80px; opacity: .55; }
 .opt.sel .token { opacity: 1; outline: 2px solid var(--gold); outline-offset: 2px; }
-.opt-label { font-family: var(--font-ui); font-size: 18px; color: var(--text); }
+.opt-label { font-family: var(--font-ui); font-size: 25px; color: #6f5d18; }
 .opt.sel .opt-label { color: var(--gold-light); }
 
 /* Griglia luoghi (18) */
@@ -544,8 +671,8 @@ h1, h2, .title { font-family: var(--font-pixel); letter-spacing: 1px; }
 }
 .reel-frame.blur img { filter: blur(1.5px); }
 .reel-label {
-  font-family: var(--font-pixel); font-size: 12px;
-  color: var(--gold-light);
+  font-family: var(--font-pixel); font-size: 14px;
+  color: #6f5d18;
   text-align: center;
   text-shadow: 1px 1px 0 #000;
 }
