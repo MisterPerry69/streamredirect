@@ -657,4 +657,14 @@ function slotMachineLook(title, pool, result) {
 window.addEventListener('error', (e) => {
   app.innerHTML = '<pre style="color:#e8d4a8;padding:20px;white-space:pre-wrap;font-family:monospace">Errore: ' + e.message + '</pre>'
 })
+
+/* Blocca menu contestuale e drag su immagini (tablet long-press apre callout
+   sui mostri, interferendo con il long-press per "sconfitto"). */
+document.addEventListener('contextmenu', (e) => {
+  if (e.target.tagName === 'IMG' || e.target.closest('.hex, .token, .table')) e.preventDefault()
+})
+document.addEventListener('dragstart', (e) => {
+  if (e.target.tagName === 'IMG') e.preventDefault()
+})
+
 render()
