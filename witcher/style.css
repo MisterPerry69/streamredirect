@@ -681,10 +681,9 @@ h1, h2, .title { font-family: var(--font-pixel); letter-spacing: 1px; }
 /* Griglia luoghi (18) */
 .loc-grid {
   display: grid;
-  grid-template-columns: repeat(6, 1fr);
-  gap: 8px;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 15px;
   width: 100%;
-  max-width: 480px;
 }
 .loc-grid .opt { padding: 2px; }
 .loc-grid .token { width: 100%; max-width: 56px; height: auto; aspect-ratio: 1; }
