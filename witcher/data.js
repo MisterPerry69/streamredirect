@@ -9,31 +9,44 @@ function locImg(terrain, numero, nome) {
   return `public/img/terrein/${TERRAIN_PREFIX[terrain]}${numero}${nome.replace(/[^A-Za-z0-9]/g, '')}.png`
 }
 
+/* Luogo 0 (Beheltnar) è speciale: appartiene a TUTTI e 3 i terreni.
+   Quando estratto da una pile, va rimosso dalle altre 2 (vedi drawLocation in app.js).
+   Quando restituito (defeat mostro), torna in tutte e 3 (vedi restoreLocations). */
+const WILD_LOCATION = { numero: 0, nome: 'Beheltnar', img: 'public/img/terrein/All0BeheltNar.png' }
+
 const RAW_LOCATIONS = {
   forest: [
     { numero: 6, nome: 'Novigrad' }, { numero: 7, nome: 'Vizima' },
     { numero: 8, nome: 'Vengerberg' }, { numero: 10, nome: 'Haern Caduch' },
-    { numero: 16, nome: 'Dhuwod' }, { numero: 17, nome: 'Stygga' }
+    { numero: 16, nome: 'Dhuwod' }, { numero: 17, nome: 'Stygga' },
+    WILD_LOCATION
   ],
   water: [
     { numero: 1, nome: 'Kaer Seren' }, { numero: 4, nome: 'Ban Ard' },
     { numero: 5, nome: 'Cidaris' }, { numero: 12, nome: 'Glenmore' },
-    { numero: 14, nome: 'Loc Ichaer' }, { numero: 15, nome: 'Gorthur Gvaed' }
+    { numero: 14, nome: 'Loc Ichaer' }, { numero: 15, nome: 'Gorthur Gvaed' },
+    WILD_LOCATION
   ],
   mountain: [
     { numero: 2, nome: 'Hengfors' }, { numero: 3, nome: 'Kaer Morhen' },
     { numero: 9, nome: 'Cintra' }, { numero: 11, nome: 'Beauclair' },
-    { numero: 13, nome: 'Doldeth' }, { numero: 18, nome: 'Ard Modron' }
+    { numero: 13, nome: 'Doldeth' }, { numero: 18, nome: 'Ard Modron' },
+    WILD_LOCATION
   ]
 }
 
 const LOCATIONS = {}
 for (const t of TERRAINS) {
   LOCATIONS[t] = RAW_LOCATIONS[t].map((l) => ({
-    ...l, terrain: t, img: locImg(t, l.numero, l.nome)
+    ...l, terrain: t, img: l.img || locImg(t, l.numero, l.nome)
   }))
 }
-const ALL_LOCATIONS = TERRAINS.flatMap((t) => LOCATIONS[t]).sort((a, b) => a.numero - b.numero)
+/* ALL_LOCATIONS deduplicato (Beheltnar appare in tutti e 3 ma per missioni va una volta sola) */
+const _seenNum = new Set()
+const ALL_LOCATIONS = TERRAINS
+  .flatMap((t) => LOCATIONS[t])
+  .filter((l) => { if (_seenNum.has(l.numero)) return false; _seenNum.add(l.numero); return true })
+  .sort((a, b) => a.numero - b.numero)
 
 const MONSTERS = {
   1: ["Nekker's Nest", 'Arachas', 'Archespore', 'Barghest', 'Foglet', 'Harpy',

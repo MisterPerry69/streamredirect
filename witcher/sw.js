@@ -5,9 +5,9 @@
  *
  * BUMP `CACHE` ogni volta che cambi i file core; le vecchie cache vengono ripulite in 'activate'.
  */
-const CACHE = 'twow-v6'
+const CACHE = 'twow-v7'
 
-const V = 'v=6'
+const V = 'v=7'
 const CORE = [
   './',
   './index.html',
@@ -17,11 +17,8 @@ const CORE = [
   './pixelate.js?' + V,
   './app.js?' + V,
   './manifest.json',
-  './public/ui/bg.png',
-  './public/ui/esagono_base.png',
-  './public/ui/cerchio_base.png',
-  './public/ui/box-missione.png',
-  './public/ui/finestra_di_dialogo.png'
+  './public/ui/bg_table.png',
+  './public/ui/dialog-box.png'
 ]
 
 const isCode = (url) => /\.(html|css|js|json)(\?|$)/.test(url) || url.endsWith('/')

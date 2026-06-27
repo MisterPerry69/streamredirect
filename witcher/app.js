@@ -50,6 +50,38 @@ function restoreTo(pile, items, keyFn) {
   pile.available = shuffle(pile.available.concat(items))
 }
 
+/* Estrae un luogo dal terreno specificato. Se è Beheltnar (numero 0),
+   lo rimuove anche dalle altre 2 pile terreno (è condiviso). */
+function drawLocation(terrain) {
+  const pile = state.terrainPiles[terrain]
+  const result = drawFrom(pile)
+  if (result.numero === 0) {
+    for (const t of TERRAINS) {
+      if (t === terrain) continue
+      const other = state.terrainPiles[t]
+      other.available = other.available.filter((l) => l.numero !== 0)
+      other.used      = other.used.filter((l) => l.numero !== 0)
+    }
+  }
+  return result
+}
+
+/* Ripristina luoghi nella pile del loro terreno. Se include Beheltnar (0),
+   lo rimette in tutte e 3 le pile. */
+function restoreLocations(terrain, locs) {
+  const non0 = locs.filter((l) => l.numero !== 0)
+  const has0 = locs.some((l) => l.numero === 0)
+  if (non0.length) restoreTo(state.terrainPiles[terrain], non0, (l) => l.numero)
+  if (has0) {
+    for (const t of TERRAINS) {
+      const other = state.terrainPiles[t]
+      const present = other.available.some((l) => l.numero === 0) ||
+                      other.used.some((l) => l.numero === 0)
+      if (!present) other.available.push({ ...WILD_LOCATION, terrain: t })
+    }
+  }
+}
+
 /* ============================================================
  *  Stato + persistenza
  * ============================================================ */
@@ -59,6 +91,7 @@ function freshState() {
   return {
     phase: 'setup',
     witcherIds: [],
+    startedAt: null,
     terrainPiles: {
       forest:   pileFrom(LOCATIONS.forest.map((l)   => ({ ...l }))),
       water:    pileFrom(LOCATIONS.water.map((l)    => ({ ...l }))),
@@ -76,7 +109,12 @@ function freshState() {
     },
     missions: [],
     nextMissionNumber: 1,
-    nextId: 1
+    nextId: 1,
+    /* history per stats fine partita */
+    history: {
+      defeatedMonsters: [],   // [{ nome, livello, terrain, at }]
+      trophiesByWitcher: {}   // { witcherId: count }
+    }
   }
 }
 let state = load()
@@ -91,7 +129,20 @@ function save() {
 const newId = () => state.nextId++
 const activeWitchers = () => state.witcherIds.map(witcherById).filter(Boolean)
 
-function startGame(ids) { state.witcherIds = ids; state.phase = 'table'; save(); render() }
+function startGame(ids) {
+  state.witcherIds = ids
+  state.phase = 'table'
+  state.startedAt = Date.now()
+  save(); render()
+}
+function elapsedMs() { return state.startedAt ? Date.now() - state.startedAt : 0 }
+function fmtDuration(ms) {
+  const s = Math.max(0, Math.floor(ms / 1000))
+  const hh = String(Math.floor(s / 3600)).padStart(2, '0')
+  const mm = String(Math.floor((s % 3600) / 60)).padStart(2, '0')
+  const ss = String(s % 60).padStart(2, '0')
+  return `${hh}:${mm}:${ss}`
+}
 function newGame() {
   if (!confirm('Nuova partita? Tutto lo stato attuale verrà azzerato.')) return
   state = freshState(); save(); render()
@@ -134,15 +185,16 @@ function tokenEl({ src, num, done, sm, blockSize }) {
   return t
 }
 
-/* Esagono mostro con foto pixelata */
-function hexMonster(monster) {
+/* Esagono mostro con foto pixelata + badge livello in alto a destra */
+function hexMonster(monster, opts = {}) {
   const h = el('div', 'hex')
   h.innerHTML = `
     <div class="hex-shape">
       <div class="hex-shape-inner">
         <img class="hex-img" alt="">
       </div>
-    </div>`
+    </div>
+    ${opts.noLevel ? '' : `<span class="hex-level">${'I'.repeat(monster.livello)}</span>`}`
   const img = h.querySelector('.hex-img')
   img.onerror = () => { img.style.visibility = 'hidden' }
   applyPixelate(img, monster.img, PIXEL_BLOCK.hex)
@@ -274,10 +326,29 @@ function renderTable() {
   mbody.appendChild(add)
   t.appendChild(missions)
 
-  // Bottone "Nuova partita" floating sopra la stage
-  const ng = el('button', 'new-game-btn', '⟳ NUOVA')
+  // Bottoni floating sopra la stage (alto-destra)
+  const toolbar = el('div', 'top-toolbar')
+  const timerEl = el('div', 'game-timer t-pixel', '00:00:00')
+  toolbar.appendChild(timerEl)
+  startTimerTick(timerEl)
+
+  const pickBtn = el('button', 'top-btn', '🎲 ESTRAI')
+  pickBtn.onclick = pickRandomWitcher
+  toolbar.appendChild(pickBtn)
+
+  const winBtn  = el('button', 'top-btn', '🏆 VITTORIA')
+  winBtn.onclick = () => endGame('win')
+  toolbar.appendChild(winBtn)
+
+  const loseBtn = el('button', 'top-btn', '🏳 RITIRATA')
+  loseBtn.onclick = () => endGame('lose')
+  toolbar.appendChild(loseBtn)
+
+  const ng = el('button', 'top-btn', '⟳ NUOVA')
   ng.onclick = newGame
-  t.appendChild(ng)
+  toolbar.appendChild(ng)
+
+  t.appendChild(toolbar)
 
   // Hotspot sopra le icone foresta/acqua/montagna del bg_table.png:
   // click = random luogo singolo (per missioni/eventi dove serve un luogo specifico)
@@ -316,17 +387,27 @@ function monsterCard(terrain) {
     bindLongPress(h, () => defeatMonster(terrain))
     hexWrap.appendChild(h)
     hexWrap.appendChild(el('div', 'monster-name', slot.monster.nome))
+    // Luogo di spawn (proprietà del mostro)
+    if (slot.monster.spawnLoc) {
+      const spawnRow = el('div', 'spawn-loc')
+      spawnRow.appendChild(tokenEl({ src: slot.monster.spawnLoc.img, num: slot.monster.spawnLoc.numero, sm: true }))
+      hexWrap.appendChild(spawnRow)
+    }
     body.appendChild(hexWrap)
 
     const seguiBtn = el('button', 'btn btn-sm', 'SEGUI')
     seguiBtn.onclick = () => chooseFollower(terrain)
     body.appendChild(seguiBtn)
 
-    // tracce
+    // tracce — tap sul token-luogo toggla 🏆 (trofeo raccolto)
     const tracks = el('div', 'tracks')
-    slot.tracks.forEach((tr) => {
+    slot.tracks.forEach((tr, idx) => {
       const row = el('div', 'track')
-      row.appendChild(tokenEl({ src: tr.loc.img, num: tr.loc.numero, sm: true }))
+      const lt = tokenEl({ src: tr.loc.img, num: tr.loc.numero, sm: true })
+      if (tr.trofeo) lt.classList.add('trophy')
+      lt.style.cursor = 'pointer'
+      lt.onclick = () => { tr.trofeo = !tr.trofeo; save(); render() }
+      row.appendChild(lt)
       const w = witcherById(tr.witcherId)
       if (w) row.appendChild(tokenEl({ src: w.avatar, sm: true }))
       tracks.appendChild(row)
@@ -402,7 +483,7 @@ function chooseLevel(terrain) {
       MONSTER_LEVELS.forEach((lvl) => {
         const b = el('button', 'level-btn',
           `<img src="public/img/mostri_level_${lvl}.png" alt="Livello ${lvl}">`)
-        b.onclick = () => { closeDialog(); drawMonster(terrain, lvl) }
+        b.onclick = () => { closeDialog(); spawnFlow(terrain, lvl) }
         row.appendChild(b)
       })
       inner.appendChild(row)
@@ -410,15 +491,149 @@ function chooseLevel(terrain) {
     buttons: [{ label: 'Annulla' }]
   })
 }
-function drawMonster(terrain, lvl) {
-  const pile = state.monsterPiles[lvl]
-  const pool = (pile.available.length ? pile.available : pile.used).map((m) => ({ ...m }))
-  const result = { ...drawFrom(pile) }
-  save()
-  slotMachine('LIVELLO ' + 'I'.repeat(lvl),
-    pool.map((m) => ({ label: m.nome, img: m.img })),
-    { label: result.nome, img: result.img },
-    () => { state.slots[terrain].monster = result; save(); render() })
+
+/* Flusso accoppiato spawn mostro + luogo:
+   - Reel mostro parte → si ferma
+   - Reel luogo parte automaticamente → si ferma
+   - Bottoni REROLL sotto ciascun reel + OK convalida + ANNULLA
+   - OK assegna mostro con spawnLoc al terreno */
+function spawnFlow(terrain, lvl) {
+  let mResult = null, lResult = null
+
+  function rollMonster(onDone) {
+    if (mResult) {
+      // restore corrente prima di rerollare
+      const p = state.monsterPiles[lvl]
+      p.used = p.used.filter((x) => x.nome !== mResult.nome)
+      p.available.push(mResult)
+    }
+    const pile = state.monsterPiles[lvl]
+    const pool = (pile.available.length ? pile.available : pile.used).map((m) => ({ ...m }))
+    mResult = { ...drawFrom(pile) }
+    save()
+    return { pool: pool.map((m) => ({ label: m.nome, img: m.img })),
+             result: { label: mResult.nome, img: mResult.img }, onDone }
+  }
+  function rollLocation(onDone) {
+    if (lResult) restoreLocations(terrain, [lResult])
+    const pile = state.terrainPiles[terrain]
+    const pool = (pile.available.length ? pile.available : pile.used).map((l) => ({ ...l }))
+    lResult = drawLocation(terrain)
+    save()
+    return { pool: pool.map((l) => ({ label: `#${l.numero} ${l.nome}`, img: l.img })),
+             result: { label: `#${lResult.numero} ${lResult.nome}`, img: lResult.img }, onDone }
+  }
+
+  closeDialog()
+  const ov = el('div', 'modal')
+  const dlg = el('div', 'dialog')
+  dlg.innerHTML = `
+    <div class="panel-header"><span>SPAWN MOSTRO — LIV ${'I'.repeat(lvl)}</span></div>
+    <div class="panel-body">
+      <div class="spawn-flow">
+        <div class="spawn-col">
+          <div class="spawn-label">MOSTRO</div>
+          <div class="reel" data-reel="monster">
+            <div class="reel-frame blur"><img alt=""></div>
+            <div class="reel-label"></div>
+          </div>
+          <button class="btn btn-sm reroll-m" disabled>REROLL</button>
+        </div>
+        <div class="spawn-col">
+          <div class="spawn-label">LUOGO</div>
+          <div class="reel" data-reel="location">
+            <div class="reel-frame blur"><img alt=""></div>
+            <div class="reel-label"></div>
+          </div>
+          <button class="btn btn-sm reroll-l" disabled>REROLL</button>
+        </div>
+      </div>
+    </div>
+    <div class="dialog-actions">
+      <button class="btn ann">ANNULLA</button>
+      <button class="btn btn-primary ok" disabled>OK</button>
+    </div>`
+  ov.appendChild(dlg)
+  document.body.appendChild(ov)
+  openModal = ov
+
+  const reelM = dlg.querySelector('[data-reel="monster"]')
+  const reelL = dlg.querySelector('[data-reel="location"]')
+  const rerollM = dlg.querySelector('.reroll-m')
+  const rerollL = dlg.querySelector('.reroll-l')
+  const okBtn = dlg.querySelector('.ok')
+  const annBtn = dlg.querySelector('.ann')
+
+  function spinReel(reelEl, items, result, onDone) {
+    const frame = reelEl.querySelector('.reel-frame')
+    const img   = reelEl.querySelector('img')
+    const label = reelEl.querySelector('.reel-label')
+    frame.classList.add('blur')
+    reelEl.classList.remove('landed')
+    img.onerror = () => { img.style.visibility = 'hidden' }
+    const seq = items.length ? items : [result]
+    let i = 0
+    const start = performance.now(), duration = 1500
+    const set = (it) => { applyPixelate(img, it.img, PIXEL_BLOCK.reel); label.textContent = it.label }
+    set(seq[0])
+    function tick() {
+      const elapsed = performance.now() - start
+      if (elapsed >= duration) {
+        frame.classList.remove('blur')
+        reelEl.classList.add('landed')
+        set(result)
+        if (onDone) onDone()
+        return
+      }
+      i = (i + 1) % seq.length
+      set(seq[i])
+      setTimeout(tick, 50 + Math.pow(elapsed / duration, 3) * 240)
+    }
+    setTimeout(tick, 50)
+  }
+
+  function startMonsterSpin() {
+    okBtn.disabled = true
+    rerollM.disabled = true
+    rerollL.disabled = true
+    const r = rollMonster()
+    spinReel(reelM, r.pool, r.result, startLocationSpin)
+  }
+  function startLocationSpin() {
+    const r = rollLocation()
+    spinReel(reelL, r.pool, r.result, () => {
+      rerollM.disabled = false
+      rerollL.disabled = false
+      okBtn.disabled = false
+    })
+  }
+
+  rerollM.onclick = () => { okBtn.disabled = true; rerollM.disabled = true
+    const r = rollMonster()
+    spinReel(reelM, r.pool, r.result, () => { rerollM.disabled = false; okBtn.disabled = false })
+  }
+  rerollL.onclick = () => { okBtn.disabled = true; rerollL.disabled = true
+    const r = rollLocation()
+    spinReel(reelL, r.pool, r.result, () => { rerollL.disabled = false; okBtn.disabled = false })
+  }
+  okBtn.onclick = () => {
+    if (!mResult || !lResult) return
+    state.slots[terrain].monster = { ...mResult, spawnLoc: { ...lResult } }
+    save(); render()
+    closeDialog()
+  }
+  annBtn.onclick = () => {
+    // restore tutto se annullato
+    if (mResult) {
+      const p = state.monsterPiles[lvl]
+      p.used = p.used.filter((x) => x.nome !== mResult.nome)
+      p.available.push(mResult)
+    }
+    if (lResult) restoreLocations(terrain, [lResult])
+    save(); closeDialog()
+  }
+
+  startMonsterSpin()
 }
 
 function chooseFollower(terrain) {
@@ -441,12 +656,15 @@ function chooseFollower(terrain) {
 function followMonster(terrain, witcherId) {
   const pile = state.terrainPiles[terrain]
   const pool = (pile.available.length ? pile.available : pile.used).map((l) => ({ ...l }))
-  const result = { ...drawFrom(pile) }
+  const result = drawLocation(terrain)
   save()
   slotMachine('TRACCIA — ' + TERRAIN_LABELS[terrain].toUpperCase(),
     pool.map((l) => ({ label: `#${l.numero} ${l.nome}`, img: l.img })),
     { label: `#${result.numero} ${result.nome}`, img: result.img },
-    () => { state.slots[terrain].tracks.push({ witcherId, loc: result }); save(); render() })
+    () => {
+      state.slots[terrain].tracks.push({ witcherId, loc: { ...result }, trofeo: false })
+      save(); render()
+    })
 }
 
 /* Estrae un singolo luogo dal mazzo del terreno (consuma la pila) e lo
@@ -455,7 +673,7 @@ function followMonster(terrain, witcherId) {
 function peekRandomLocation(terrain) {
   const pile = state.terrainPiles[terrain]
   const pool = (pile.available.length ? pile.available : pile.used).map((l) => ({ ...l }))
-  const result = { ...drawFrom(pile) }
+  const result = drawLocation(terrain)
   save()
   slotMachineLook('LUOGO — ' + TERRAIN_LABELS[terrain].toUpperCase(),
     pool.map((l) => ({ label: `#${l.numero} ${l.nome}`, img: l.img })),
@@ -467,8 +685,20 @@ function defeatMonster(terrain) {
   if (!slot.monster) return
   const monster = slot.monster
   showDefeat(monster, () => {
+    // Stats: salva mostro nella history + conta trofei per witcher
+    state.history.defeatedMonsters.push({
+      nome: monster.nome, livello: monster.livello, terrain, at: Date.now()
+    })
+    slot.tracks.forEach((tr) => {
+      if (tr.trofeo && tr.witcherId != null) {
+        state.history.trophiesByWitcher[tr.witcherId] =
+          (state.history.trophiesByWitcher[tr.witcherId] || 0) + 1
+      }
+    })
+    // Rimetti tutti i luoghi nelle pile (tracce + spawnLoc del mostro)
     const freed = slot.tracks.map((t) => t.loc)
-    if (freed.length) restoreTo(state.terrainPiles[terrain], freed, (l) => l.numero)
+    if (monster.spawnLoc) freed.push(monster.spawnLoc)
+    if (freed.length) restoreLocations(terrain, freed)
     slot.monster = null; slot.tracks = []
     save(); render()
   })
@@ -596,6 +826,149 @@ function slotMachine(title, pool, result, done) {
     setTimeout(tick, 50 + Math.pow(elapsed / duration, 3) * 240)
   }
   setTimeout(tick, 50)
+}
+
+/* ============================================================
+ *  Timer durata partita (tick a 1s)
+ * ============================================================ */
+let _timerHandle = null
+function startTimerTick(node) {
+  if (_timerHandle) clearInterval(_timerHandle)
+  const update = () => { node.textContent = fmtDuration(elapsedMs()) }
+  update()
+  _timerHandle = setInterval(() => {
+    if (!node.isConnected) { clearInterval(_timerHandle); _timerHandle = null; return }
+    update()
+  }, 1000)
+}
+
+/* ============================================================
+ *  Estrai giocatore random (dialog dedicato)
+ * ============================================================ */
+function pickRandomWitcher() {
+  const FREE = '__free__'
+  let selected = activeWitchers().map((w) => w.id)
+  selected.push(FREE)
+
+  makeDialog({
+    title: 'ESTRAI GIOCATORE',
+    body: (inner) => {
+      const opts = el('div', 'opts')
+      const refresh = (btn, on) => btn.classList.toggle('sel', on)
+      activeWitchers().forEach((w) => {
+        const o = el('button', 'opt sel')
+        o.appendChild(tokenEl({ src: w.avatar }))
+        o.appendChild(el('span', 'opt-label', w.nome))
+        o.onclick = () => {
+          const i = selected.indexOf(w.id)
+          if (i >= 0) { selected.splice(i, 1); refresh(o, false) }
+          else        { selected.push(w.id); refresh(o, true) }
+        }
+        opts.appendChild(o)
+      })
+      const fr = el('button', 'opt sel pick-free-opt')
+      fr.appendChild(el('span', 'opt-label t-pixel', 'A SCELTA'))
+      fr.onclick = () => {
+        const i = selected.indexOf(FREE)
+        if (i >= 0) { selected.splice(i, 1); refresh(fr, false) }
+        else        { selected.push(FREE); refresh(fr, true) }
+      }
+      opts.appendChild(fr)
+      inner.appendChild(opts)
+
+      const result = el('div', 'pick-result')
+      inner.appendChild(result)
+
+      const draw = el('button', 'btn btn-primary', 'ESTRAI!')
+      draw.onclick = () => {
+        if (!selected.length) return
+        const picked = selected[Math.floor(Math.random() * selected.length)]
+        result.innerHTML = ''
+        if (picked === FREE) {
+          const t = el('div', 'pick-free', 'A SCELTA')
+          result.appendChild(t)
+        } else {
+          const w = witcherById(picked)
+          const tok = tokenEl({ src: w.avatar })
+          tok.classList.add('pick-big')
+          result.appendChild(tok)
+          result.appendChild(el('div', 'pick-name', w.nome))
+        }
+      }
+      inner.appendChild(draw)
+    },
+    buttons: [{ label: 'Chiudi' }]
+  })
+}
+
+/* ============================================================
+ *  Fine partita + schermata stats
+ * ============================================================ */
+function endGame(outcome /* 'win' | 'lose' */) {
+  const verb = outcome === 'win' ? 'VITTORIA' : 'RITIRATA'
+  if (!confirm(`Confermi ${verb}? La partita verrà chiusa.`)) return
+  const duration = elapsedMs()
+  const stats = collectStats(duration, outcome)
+  showStats(stats)
+}
+
+function collectStats(durationMs, outcome) {
+  const byLvl = { 1: 0, 2: 0, 3: 0 }
+  state.history.defeatedMonsters.forEach((m) => { byLvl[m.livello] = (byLvl[m.livello] || 0) + 1 })
+  const missionsDone = state.missions.filter(isComplete).length
+  const missionsTot  = state.missions.length
+  const trophies = {}
+  state.witcherIds.forEach((id) => { trophies[id] = state.history.trophiesByWitcher[id] || 0 })
+  // Conta anche i trofei sulle tracce attuali (mostri non ancora sconfitti)
+  TERRAINS.forEach((t) => {
+    state.slots[t].tracks.forEach((tr) => {
+      if (tr.trofeo && tr.witcherId != null) {
+        trophies[tr.witcherId] = (trophies[tr.witcherId] || 0) + 1
+      }
+    })
+  })
+  return { outcome, durationMs, byLvl, missionsDone, missionsTot, trophies }
+}
+
+function showStats(s) {
+  closeDialog()
+  const ov = el('div', 'modal')
+  const dlg = el('div', 'dialog')
+  const title = s.outcome === 'win' ? '🏆 VITTORIA' : '🏳 RITIRATA'
+  dlg.innerHTML = `
+    <div class="panel-header"><span>${title}</span></div>
+    <div class="panel-body">
+      <div class="stats-grid">
+        <div class="stat-row"><span class="stat-k">DURATA</span><span class="stat-v">${fmtDuration(s.durationMs)}</span></div>
+        <div class="stat-row"><span class="stat-k">MOSTRI LIV I</span><span class="stat-v">${s.byLvl[1]}</span></div>
+        <div class="stat-row"><span class="stat-k">MOSTRI LIV II</span><span class="stat-v">${s.byLvl[2]}</span></div>
+        <div class="stat-row"><span class="stat-k">MOSTRI LIV III</span><span class="stat-v">${s.byLvl[3]}</span></div>
+        <div class="stat-row"><span class="stat-k">MISSIONI</span><span class="stat-v">${s.missionsDone}/${s.missionsTot}</span></div>
+      </div>
+      <div class="stats-trophies"></div>
+    </div>
+    <div class="dialog-actions">
+      <button class="btn btn-primary new-after">NUOVA PARTITA</button>
+      <button class="btn close-stats">CHIUDI</button>
+    </div>`
+  const trophyBox = dlg.querySelector('.stats-trophies')
+  trophyBox.appendChild(el('div', 'trophy-title t-pixel', 'TROFEI'))
+  const row = el('div', 'trophy-row')
+  state.witcherIds.forEach((id) => {
+    const w = witcherById(id)
+    if (!w) return
+    const item = el('div', 'trophy-item')
+    item.appendChild(tokenEl({ src: w.avatar, sm: true }))
+    item.appendChild(el('span', 't-pixel', `×${s.trophies[id]}`))
+    row.appendChild(item)
+  })
+  trophyBox.appendChild(row)
+
+  ov.appendChild(dlg)
+  document.body.appendChild(ov)
+  openModal = ov
+  dlg.querySelector('.new-after').onclick = () => { state = freshState(); save(); closeDialog(); render() }
+  dlg.querySelector('.close-stats').onclick = closeDialog
 }
 
 /* Variante del randomizer per il peek terreno: NON si chiude da sola,

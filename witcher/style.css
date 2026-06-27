@@ -123,18 +123,31 @@ h1, h2, .title { font-family: var(--font-pixel); letter-spacing: 1px; }
    che ha overflow-y:auto (altrimenti viene clippato). */
 .table .tracks { padding: 10px 10px 0 10px; }
 
-/* Bottone NUOVA PARTITA — floating in alto a destra della stage */
-.table .new-game-btn {
+/* Toolbar in alto a destra: timer + bottoni partita */
+.top-toolbar {
   position: absolute;
   top: 6px; right: 8px;
+  display: flex; gap: 6px; align-items: center;
+  z-index: 5;
+}
+.game-timer {
+  background: var(--metal-dark);
+  color: var(--gold-light);
+  font-family: var(--font-pixel);
+  font-size: 11px;
+  padding: 6px 10px;
+  border: 1px solid var(--gold-dim);
+}
+.top-btn {
   background: var(--metal-dark);
   color: var(--gold);
   border: 1px solid var(--gold-dim);
-  padding: 4px 8px;
+  padding: 5px 9px;
   font-family: var(--font-pixel);
   font-size: 9px;
-  z-index: 5;
+  cursor: pointer;
 }
+.top-btn:active { transform: translate(1px, 1px); }
 
 /* Hotspot trasparenti sopra le icone tonde foresta/acqua/montagna del bg.
    Click = randomizer di un luogo per quel terreno (peek). */
@@ -274,6 +287,17 @@ h1, h2, .title { font-family: var(--font-pixel); letter-spacing: 1px; }
 }
 .token.done .token-img { opacity: .45; }
 
+/* Trofeo raccolto su una traccia (overlay 🏆 sopra il token) */
+.token.trophy::after {
+  content: '🏆';
+  position: absolute;
+  bottom: -8px; right: -8px;
+  font-size: 18px;
+  line-height: 1;
+  z-index: 4;
+  filter: drop-shadow(1px 1px 0 #000);
+}
+
 .token-sm { width: 50px; height: 50px; }
 .token-sm .token-num { font-size: 11px; padding: 3px 5px; min-width: 20px; top: -6px; left: -6px; }
 
@@ -334,7 +358,26 @@ h1, h2, .title { font-family: var(--font-pixel); letter-spacing: 1px; }
   color: var(--text);
   text-shadow: 1px 1px 0 #000;
 }
+/* Badge livello mostro (I / II / III) in alto-destra dell'hex */
+.hex-level {
+  position: absolute; top: -4px; right: -6px;
+  background: var(--metal-dark);
+  color: var(--gold-light);
+  font-family: var(--font-pixel);
+  font-size: 10px;
+  padding: 3px 5px;
+  border: 1px solid var(--gold);
+  z-index: 4;
+  line-height: 1;
+  text-shadow: 1px 1px 0 #000;
+}
 .hex:active { transform: translateY(1px); }
+
+/* Spawn location del mostro (token piccolo sotto al nome) */
+.spawn-loc {
+  display: flex; justify-content: center;
+  margin-top: 4px;
+}
 
 /* ============================================
  * SETUP screen
@@ -686,6 +729,87 @@ h1, h2, .title { font-family: var(--font-pixel); letter-spacing: 1px; }
   text-shadow: 1px 1px 0 #000;
 }
 .reel.landed .reel-label { color: var(--green); }
+
+/* Spawn flow: 2 reel affiancati (mostro + luogo) */
+.spawn-flow {
+  display: flex; gap: 24px;
+  align-items: flex-start; justify-content: center;
+  width: 100%;
+}
+.spawn-col {
+  display: flex; flex-direction: column;
+  align-items: center; gap: 8px;
+}
+.spawn-label {
+  font-family: var(--font-pixel);
+  font-size: 10px;
+  color: var(--gold-light);
+  text-shadow: 1px 1px 0 #000;
+  letter-spacing: 2px;
+}
+
+/* Estrai giocatore — risultato */
+.pick-result {
+  display: flex; flex-direction: column;
+  align-items: center; gap: 6px;
+  min-height: 90px;
+}
+.pick-result .token.pick-big {
+  width: 90px; height: 90px;
+}
+.pick-name {
+  font-family: var(--font-pixel);
+  font-size: 12px;
+  color: var(--gold-light);
+  letter-spacing: 2px;
+  text-shadow: 1px 1px 0 #000;
+}
+.pick-free {
+  font-family: var(--font-pixel);
+  font-size: 18px;
+  color: var(--gold-light);
+  letter-spacing: 3px;
+  padding: 12px 20px;
+  background: var(--metal-dark);
+  border: 2px solid var(--gold);
+  text-shadow: 1px 1px 0 #000;
+}
+.pick-free-opt { min-width: 90px; }
+
+/* Schermata stats (vittoria/ritirata) */
+.stats-grid {
+  display: flex; flex-direction: column;
+  gap: 4px;
+  background: rgba(0,0,0,.25);
+  border: 1px solid var(--metal-dark);
+  padding: 10px 14px;
+  min-width: 240px;
+}
+.stat-row {
+  display: flex; justify-content: space-between;
+  gap: 12px;
+  font-family: var(--font-pixel);
+  font-size: 11px;
+}
+.stat-k { color: var(--text-dim); letter-spacing: 1px; }
+.stat-v { color: var(--gold-light); text-shadow: 1px 1px 0 #000; }
+
+.stats-trophies {
+  display: flex; flex-direction: column; align-items: center;
+  gap: 8px; margin-top: 6px;
+}
+.trophy-title {
+  font-size: 11px; color: var(--gold-light);
+  letter-spacing: 2px; text-shadow: 1px 1px 0 #000;
+}
+.trophy-row {
+  display: flex; gap: 14px; flex-wrap: wrap; justify-content: center;
+}
+.trophy-item {
+  display: flex; flex-direction: column;
+  align-items: center; gap: 4px;
+  font-size: 12px; color: var(--gold-light);
+}
 
 /* ============================================
  * SCONFITTO (defeat)
