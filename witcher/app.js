@@ -112,8 +112,8 @@ function freshState() {
     nextId: 1,
     /* history per stats fine partita */
     history: {
-      defeatedMonsters: [],   // [{ nome, livello, terrain, at }]
-      trophiesByWitcher: {}   // { witcherId: count }
+      defeatedMonsters: [],         // [{ nome, livello, terrain, at }]
+      tracksTakenByWitcher: {}      // { witcherId: count tracce raccolte }
     }
   }
 }
@@ -144,8 +144,14 @@ function fmtDuration(ms) {
   return `${hh}:${mm}:${ss}`
 }
 function newGame() {
-  if (!confirm('Nuova partita? Tutto lo stato attuale verrà azzerato.')) return
-  state = freshState(); save(); render()
+  confirmDialog({
+    title: 'NUOVA PARTITA',
+    message: 'Resettare tutto e iniziare una nuova partita?',
+    yesLabel: 'CONFERMA',
+    noLabel:  'ANNULLA',
+    danger: true,
+    onYes: () => { state = freshState(); save(); render() }
+  })
 }
 
 /* ============================================================
@@ -215,6 +221,21 @@ function hexEmpty() {
  * ============================================================ */
 let openModal = null
 function closeDialog() { if (openModal) { openModal.remove(); openModal = null } }
+
+/* Conferma custom (rimpiazza confirm() di sistema). */
+function confirmDialog({ title, message, yesLabel, noLabel, danger, onYes, onNo }) {
+  makeDialog({
+    title: title || 'CONFERMA',
+    body: (inner) => {
+      inner.appendChild(el('div', 'confirm-msg', message || ''))
+    },
+    buttons: [
+      { label: yesLabel || 'SÌ', primary: !danger, danger: !!danger,
+        onClick: () => onYes && onYes() },
+      { label: noLabel  || 'NO', onClick: () => onNo && onNo() }
+    ]
+  })
+}
 
 function makeDialog({ title, body, buttons }) {
   closeDialog()
@@ -336,13 +357,9 @@ function renderTable() {
   pickBtn.onclick = pickRandomWitcher
   toolbar.appendChild(pickBtn)
 
-  const winBtn  = el('button', 'top-btn', '🏆 VITTORIA')
-  winBtn.onclick = () => endGame('win')
-  toolbar.appendChild(winBtn)
-
-  const loseBtn = el('button', 'top-btn', '🏳 RITIRATA')
-  loseBtn.onclick = () => endGame('lose')
-  toolbar.appendChild(loseBtn)
+  const endBtn = el('button', 'top-btn', '🏁 FINE')
+  endBtn.onclick = endGame
+  toolbar.appendChild(endBtn)
 
   const ng = el('button', 'top-btn', '⟳ NUOVA')
   ng.onclick = newGame
@@ -387,26 +404,19 @@ function monsterCard(terrain) {
     bindLongPress(h, () => defeatMonster(terrain))
     hexWrap.appendChild(h)
     hexWrap.appendChild(el('div', 'monster-name', slot.monster.nome))
-    // Luogo di spawn (proprietà del mostro)
-    if (slot.monster.spawnLoc) {
-      const spawnRow = el('div', 'spawn-loc')
-      spawnRow.appendChild(tokenEl({ src: slot.monster.spawnLoc.img, num: slot.monster.spawnLoc.numero, sm: true }))
-      hexWrap.appendChild(spawnRow)
-    }
     body.appendChild(hexWrap)
 
     const seguiBtn = el('button', 'btn btn-sm', 'SEGUI')
     seguiBtn.onclick = () => chooseFollower(terrain)
     body.appendChild(seguiBtn)
 
-    // tracce — tap sul token-luogo toggla 🏆 (trofeo raccolto)
+    // tracce — tap sul token-luogo toggla ✓ "raccolto" (come marker missioni)
     const tracks = el('div', 'tracks')
     slot.tracks.forEach((tr, idx) => {
       const row = el('div', 'track')
-      const lt = tokenEl({ src: tr.loc.img, num: tr.loc.numero, sm: true })
-      if (tr.trofeo) lt.classList.add('trophy')
+      const lt = tokenEl({ src: tr.loc.img, num: tr.loc.numero, sm: true, done: tr.raccolto })
       lt.style.cursor = 'pointer'
-      lt.onclick = () => { tr.trofeo = !tr.trofeo; save(); render() }
+      lt.onclick = () => { tr.raccolto = !tr.raccolto; save(); render() }
       row.appendChild(lt)
       const w = witcherById(tr.witcherId)
       if (w) row.appendChild(tokenEl({ src: w.avatar, sm: true }))
@@ -431,10 +441,15 @@ function missionCard(m) {
   // numero (long press per eliminare)
   const numBtn = el('button', 'mission-num', '#' + m.numero)
   bindLongPress(numBtn, () => {
-    if (confirm('Eliminare questa missione?')) {
-      state.missions = state.missions.filter((x) => x.id !== m.id)
-      save(); render()
-    }
+    confirmDialog({
+      title: 'ELIMINA MISSIONE',
+      message: `Eliminare la missione #${m.numero}?`,
+      yesLabel: 'ELIMINA', noLabel: 'ANNULLA', danger: true,
+      onYes: () => {
+        state.missions = state.missions.filter((x) => x.id !== m.id)
+        save(); render()
+      }
+    })
   })
   card.appendChild(numBtn)
 
@@ -529,23 +544,27 @@ function spawnFlow(terrain, lvl) {
   const dlg = el('div', 'dialog')
   dlg.innerHTML = `
     <div class="panel-header"><span>SPAWN MOSTRO — LIV ${'I'.repeat(lvl)}</span></div>
-    <div class="panel-body">
+    <div class="panel-body spawn-body">
       <div class="spawn-flow">
         <div class="spawn-col">
           <div class="spawn-label">MOSTRO</div>
-          <div class="reel" data-reel="monster">
-            <div class="reel-frame blur"><img alt=""></div>
-            <div class="reel-label"></div>
+          <div class="spawn-box" data-reel="monster">
+            <button class="reroll-btn reroll-m" disabled title="Reroll">↩</button>
+            <div class="reel">
+              <div class="reel-frame blur"><img alt=""></div>
+              <div class="reel-label"></div>
+            </div>
           </div>
-          <button class="btn btn-sm reroll-m" disabled>REROLL</button>
         </div>
         <div class="spawn-col">
           <div class="spawn-label">LUOGO</div>
-          <div class="reel" data-reel="location">
-            <div class="reel-frame blur"><img alt=""></div>
-            <div class="reel-label"></div>
+          <div class="spawn-box" data-reel="location">
+            <button class="reroll-btn reroll-l" disabled title="Reroll">↩</button>
+            <div class="reel">
+              <div class="reel-frame blur"><img alt=""></div>
+              <div class="reel-label"></div>
+            </div>
           </div>
-          <button class="btn btn-sm reroll-l" disabled>REROLL</button>
         </div>
       </div>
     </div>
@@ -557,8 +576,8 @@ function spawnFlow(terrain, lvl) {
   document.body.appendChild(ov)
   openModal = ov
 
-  const reelM = dlg.querySelector('[data-reel="monster"]')
-  const reelL = dlg.querySelector('[data-reel="location"]')
+  const reelM = dlg.querySelector('[data-reel="monster"] .reel')
+  const reelL = dlg.querySelector('[data-reel="location"] .reel')
   const rerollM = dlg.querySelector('.reroll-m')
   const rerollL = dlg.querySelector('.reroll-l')
   const okBtn = dlg.querySelector('.ok')
@@ -662,7 +681,7 @@ function followMonster(terrain, witcherId) {
     pool.map((l) => ({ label: `#${l.numero} ${l.nome}`, img: l.img })),
     { label: `#${result.numero} ${result.nome}`, img: result.img },
     () => {
-      state.slots[terrain].tracks.push({ witcherId, loc: { ...result }, trofeo: false })
+      state.slots[terrain].tracks.push({ witcherId, loc: { ...result }, raccolto: false })
       save(); render()
     })
 }
@@ -690,9 +709,9 @@ function defeatMonster(terrain) {
       nome: monster.nome, livello: monster.livello, terrain, at: Date.now()
     })
     slot.tracks.forEach((tr) => {
-      if (tr.trofeo && tr.witcherId != null) {
-        state.history.trophiesByWitcher[tr.witcherId] =
-          (state.history.trophiesByWitcher[tr.witcherId] || 0) + 1
+      if (tr.raccolto && tr.witcherId != null) {
+        state.history.tracksTakenByWitcher[tr.witcherId] =
+          (state.history.tracksTakenByWitcher[tr.witcherId] || 0) + 1
       }
     })
     // Rimetti tutti i luoghi nelle pile (tracce + spawnLoc del mostro)
@@ -845,71 +864,75 @@ function startTimerTick(node) {
 /* ============================================================
  *  Estrai giocatore random (dialog dedicato)
  * ============================================================ */
+/* Avatar "?" per l'opzione "a scelta" — SVG inline così è una vera immagine */
+const FREE_AVATAR = 'data:image/svg+xml;utf8,' + encodeURIComponent(
+  '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96">' +
+  '<rect width="96" height="96" fill="#2a1810"/>' +
+  '<text x="48" y="72" text-anchor="middle" font-family="monospace" font-weight="bold" font-size="78" fill="#d4a042">?</text>' +
+  '</svg>'
+)
+
 function pickRandomWitcher() {
   const FREE = '__free__'
   let selected = activeWitchers().map((w) => w.id)
   selected.push(FREE)
+
+  const candidates = () => {
+    const arr = activeWitchers().map((w) => ({ id: w.id, label: w.nome, img: w.avatar }))
+    arr.push({ id: FREE, label: '?', img: FREE_AVATAR })
+    return arr
+  }
 
   makeDialog({
     title: 'ESTRAI GIOCATORE',
     body: (inner) => {
       const opts = el('div', 'opts')
       const refresh = (btn, on) => btn.classList.toggle('sel', on)
-      activeWitchers().forEach((w) => {
+      candidates().forEach((c) => {
         const o = el('button', 'opt sel')
-        o.appendChild(tokenEl({ src: w.avatar }))
-        o.appendChild(el('span', 'opt-label', w.nome))
+        o.appendChild(tokenEl({ src: c.img }))
+        o.appendChild(el('span', 'opt-label', c.label))
         o.onclick = () => {
-          const i = selected.indexOf(w.id)
+          const i = selected.indexOf(c.id)
           if (i >= 0) { selected.splice(i, 1); refresh(o, false) }
-          else        { selected.push(w.id); refresh(o, true) }
+          else        { selected.push(c.id); refresh(o, true) }
         }
         opts.appendChild(o)
       })
-      const fr = el('button', 'opt sel pick-free-opt')
-      fr.appendChild(el('span', 'opt-label t-pixel', 'A SCELTA'))
-      fr.onclick = () => {
-        const i = selected.indexOf(FREE)
-        if (i >= 0) { selected.splice(i, 1); refresh(fr, false) }
-        else        { selected.push(FREE); refresh(fr, true) }
-      }
-      opts.appendChild(fr)
       inner.appendChild(opts)
-
-      const result = el('div', 'pick-result')
-      inner.appendChild(result)
-
-      const draw = el('button', 'btn btn-primary', 'ESTRAI!')
-      draw.onclick = () => {
-        if (!selected.length) return
-        const picked = selected[Math.floor(Math.random() * selected.length)]
-        result.innerHTML = ''
-        if (picked === FREE) {
-          const t = el('div', 'pick-free', 'A SCELTA')
-          result.appendChild(t)
-        } else {
-          const w = witcherById(picked)
-          const tok = tokenEl({ src: w.avatar })
-          tok.classList.add('pick-big')
-          result.appendChild(tok)
-          result.appendChild(el('div', 'pick-name', w.nome))
-        }
-      }
-      inner.appendChild(draw)
     },
-    buttons: [{ label: 'Chiudi' }]
+    buttons: [
+      { label: 'ESTRAI', primary: true, onClick: () => {
+        if (!selected.length) return
+        const all = candidates()
+        const pickedId = selected[Math.floor(Math.random() * selected.length)]
+        const result = all.find((c) => c.id === pickedId)
+        const pool = selected.map((id) => all.find((c) => c.id === id))
+        slotMachineLook('GIOCATORE ESTRATTO', pool, result)
+      }},
+      { label: 'CHIUDI' }
+    ]
   })
 }
 
 /* ============================================================
  *  Fine partita + schermata stats
  * ============================================================ */
-function endGame(outcome /* 'win' | 'lose' */) {
-  const verb = outcome === 'win' ? 'VITTORIA' : 'RITIRATA'
-  if (!confirm(`Confermi ${verb}? La partita verrà chiusa.`)) return
-  const duration = elapsedMs()
-  const stats = collectStats(duration, outcome)
-  showStats(stats)
+function endGame() {
+  makeDialog({
+    title: 'FINE PARTITA',
+    body: (inner) => {
+      inner.appendChild(el('div', 'confirm-msg', 'Esito della partita?'))
+    },
+    buttons: [
+      { label: '🏆 VITTORIA', primary: true,
+        onClick: () => showStats(collectStats(elapsedMs(), 'win')) },
+      { label: '🏳 RITIRATA',
+        onClick: () => showStats(collectStats(elapsedMs(), 'lose')) },
+      { label: 'ANNULLA',
+        onClick: () => {} }
+    ]
+  })
 }
 
 function collectStats(durationMs, outcome) {
@@ -917,17 +940,17 @@ function collectStats(durationMs, outcome) {
   state.history.defeatedMonsters.forEach((m) => { byLvl[m.livello] = (byLvl[m.livello] || 0) + 1 })
   const missionsDone = state.missions.filter(isComplete).length
   const missionsTot  = state.missions.length
-  const trophies = {}
-  state.witcherIds.forEach((id) => { trophies[id] = state.history.trophiesByWitcher[id] || 0 })
-  // Conta anche i trofei sulle tracce attuali (mostri non ancora sconfitti)
+  const tracks = {}
+  state.witcherIds.forEach((id) => { tracks[id] = state.history.tracksTakenByWitcher[id] || 0 })
+  // Conta anche le tracce raccolte attualmente (mostri non ancora sconfitti)
   TERRAINS.forEach((t) => {
     state.slots[t].tracks.forEach((tr) => {
-      if (tr.trofeo && tr.witcherId != null) {
-        trophies[tr.witcherId] = (trophies[tr.witcherId] || 0) + 1
+      if (tr.raccolto && tr.witcherId != null) {
+        tracks[tr.witcherId] = (tracks[tr.witcherId] || 0) + 1
       }
     })
   })
-  return { outcome, durationMs, byLvl, missionsDone, missionsTot, trophies }
+  return { outcome, durationMs, byLvl, missionsDone, missionsTot, tracks }
 }
 
 function showStats(s) {
@@ -952,14 +975,14 @@ function showStats(s) {
       <button class="btn close-stats">CHIUDI</button>
     </div>`
   const trophyBox = dlg.querySelector('.stats-trophies')
-  trophyBox.appendChild(el('div', 'trophy-title t-pixel', 'TROFEI'))
+  trophyBox.appendChild(el('div', 'trophy-title t-pixel', 'TRACCE RACCOLTE'))
   const row = el('div', 'trophy-row')
   state.witcherIds.forEach((id) => {
     const w = witcherById(id)
     if (!w) return
     const item = el('div', 'trophy-item')
     item.appendChild(tokenEl({ src: w.avatar, sm: true }))
-    item.appendChild(el('span', 't-pixel', `×${s.trophies[id]}`))
+    item.appendChild(el('span', 't-pixel', `×${s.tracks[id]}`))
     row.appendChild(item)
   })
   trophyBox.appendChild(row)
