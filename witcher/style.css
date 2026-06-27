@@ -735,13 +735,14 @@ h1, h2, .title { font-family: var(--font-pixel); letter-spacing: 1px; }
   text-shadow: 1px 1px 0 #000;
   letter-spacing: 2px;
 }
-/* Contenitore con dimensioni fisse, il reel sta dentro senza muovere il box */
+/* Contenitore con dimensioni fisse, il reel sta dentro senza muovere il box.
+   Trasparente: serve solo come scatola di posizionamento, niente cornice. */
 .spawn-box {
   position: relative;
   width: 100%;
   height: 180px;
-  background: rgba(0,0,0,.15);
-  border: 1px solid var(--metal-dark);
+  background: none;
+  border: none;
   display: flex; align-items: center; justify-content: center;
   overflow: hidden;
 }
@@ -755,14 +756,15 @@ h1, h2, .title { font-family: var(--font-pixel); letter-spacing: 1px; }
   text-overflow: ellipsis;
   white-space: nowrap;
 }
-/* Bottone reroll piccolo in alto-destra del contenitore */
+/* Bottone reroll (↩) piccolo, posizionato come richiesto */
 .reroll-btn {
   position: absolute;
-  top: 4px; right: 4px;
+  top: 30px; right: 100px;
   width: 24px; height: 24px;
   background: var(--metal-dark);
   color: var(--gold-light);
   border: 1px solid var(--gold-dim);
+  border-radius: 6px;
   font-family: var(--font-pixel);
   font-size: 14px;
   line-height: 1;

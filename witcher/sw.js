@@ -5,9 +5,9 @@
  *
  * BUMP `CACHE` ogni volta che cambi i file core; le vecchie cache vengono ripulite in 'activate'.
  */
-const CACHE = 'twow-v8'
+const CACHE = 'twow-v9'
 
-const V = 'v=8'
+const V = 'v=9'
 const CORE = [
   './',
   './index.html',

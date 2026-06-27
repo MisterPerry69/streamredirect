@@ -255,8 +255,10 @@ function makeDialog({ title, body, buttons }) {
     buttons.forEach((b) => {
       const btn = el('button', 'btn' + (b.primary ? ' btn-primary' : '') + (b.danger ? ' btn-danger' : ''), b.label)
       btn.onclick = () => {
+        const myModal = openModal           // se onClick apre un nuovo modal,
         const keep = b.onClick && b.onClick() === 'keep'
-        if (!keep) closeDialog()
+        // chiudo solo se openModal è ancora QUESTO dialog (non rimpiazzato)
+        if (!keep && openModal === myModal) closeDialog()
       }
       bar.appendChild(btn)
     })
@@ -704,7 +706,10 @@ function defeatMonster(terrain) {
   if (!slot.monster) return
   const monster = slot.monster
   showDefeat(monster, () => {
-    // Stats: salva mostro nella history + conta trofei per witcher
+    // Stats: salva mostro nella history + conta tracce raccolte per witcher
+    if (!state.history) state.history = { defeatedMonsters: [], tracksTakenByWitcher: {} }
+    if (!state.history.defeatedMonsters)     state.history.defeatedMonsters = []
+    if (!state.history.tracksTakenByWitcher) state.history.tracksTakenByWitcher = {}
     state.history.defeatedMonsters.push({
       nome: monster.nome, livello: monster.livello, terrain, at: Date.now()
     })
@@ -903,12 +908,13 @@ function pickRandomWitcher() {
     },
     buttons: [
       { label: 'ESTRAI', primary: true, onClick: () => {
-        if (!selected.length) return
+        if (!selected.length) return 'keep'
         const all = candidates()
         const pickedId = selected[Math.floor(Math.random() * selected.length)]
         const result = all.find((c) => c.id === pickedId)
         const pool = selected.map((id) => all.find((c) => c.id === id))
         slotMachineLook('GIOCATORE ESTRATTO', pool, result)
+        return 'keep'   // slotMachineLook ha già rimpiazzato il modal; non richiudere
       }},
       { label: 'CHIUDI' }
     ]
@@ -936,12 +942,17 @@ function endGame() {
 }
 
 function collectStats(durationMs, outcome) {
+  // Robusto a state legacy (mancanti history / sotto-campi)
+  const hist = state.history || {}
+  const defs = hist.defeatedMonsters || []
+  const taken = hist.tracksTakenByWitcher || {}
+
   const byLvl = { 1: 0, 2: 0, 3: 0 }
-  state.history.defeatedMonsters.forEach((m) => { byLvl[m.livello] = (byLvl[m.livello] || 0) + 1 })
+  defs.forEach((m) => { byLvl[m.livello] = (byLvl[m.livello] || 0) + 1 })
   const missionsDone = state.missions.filter(isComplete).length
   const missionsTot  = state.missions.length
   const tracks = {}
-  state.witcherIds.forEach((id) => { tracks[id] = state.history.tracksTakenByWitcher[id] || 0 })
+  state.witcherIds.forEach((id) => { tracks[id] = taken[id] || 0 })
   // Conta anche le tracce raccolte attualmente (mostri non ancora sconfitti)
   TERRAINS.forEach((t) => {
     state.slots[t].tracks.forEach((tr) => {
